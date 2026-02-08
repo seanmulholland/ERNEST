@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<title>Ernest Azile</title>
+	<meta charset='utf-8'>
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style/style.css">
+	 <meta http-equiv="refresh" content="1200">
+
+</head>
+
+<body>
+
+	<!-- CLM Tracker Container -->
+    <div id="overlay-wrapper">
+    	<!-- Need video element for snapshot functionality -->
+  	    <video id="videoel" width="320" height="240"></video>
+    	<!--canvas needs w/h defined in the HTML element to match createVideo() resolution or overlay.draw() won't match up -->
+	    <canvas id="overlay" width="320" height="240"></canvas>
+    </div>
+
+    <div class="terminal" id="text-wrapper">
+		<div class="terminal-text" id="text-container"></div>
+	</div>
+
+
+	<!-- FACEBOX -->
+	<div id="facebox"><span class="faceboxTitle"> ~ PLEASE COME CLOSER ~ </span></div>
+	<!-- <div id="check">√</div> -->
+
+	<!-- GIF -->
+	<div id="gif" class="hoverWindow grassTheme">
+		<div class="windowbar">
+			Human Response Analysis
+			<div class="x">X</div>
+			<div class="max">&#10066;</div>
+			<div class="underscore">_</div>
+		</div>
+
+		<img class="gifSrc" src="https://media.giphy.com/media/100QWMdxQJzQC4/giphy.gif" />
+
+		<div id="graphBox"></div>
+	</div>
+
+
+	<!-- ENDING ANALYTICS -->
+	<div id="analytics" class="hoverWindow grassTheme">
+		<div class="windowbar">
+			Human Computer Interaction
+			<div class="x">X</div>
+			<div class="max">&#10066;</div>
+			<div class="underscore">_</div>
+		</div>
+
+		<div class="infoBox">
+		<img class="gifSrc" src="https://media.giphy.com/media/100QWMdxQJzQC4/giphy.gif" />
+		<img id="emo1" src="#" />
+			<p class="imgText"><span id="guess" class="caps">???</span>
+				<br /><br />
+				<span id="guessResult">I'm not sure...</span>
+			</p>
+		</div>
+	</div>
+
+	<!-- REPORT CARD -->
+	<div id="reportCard" class="hoverWindow grassTheme">
+		<div class="windowbar">
+			Emotion Analysis Report
+			<div class="x">X</div>
+			<div class="max">&#10066;</div>
+			<div class="underscore">_</div>
+		</div>
+
+		<div class="infoBox">
+		
+			<div id="graphBox"></div>
+
+				<p class="pre">
+███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
+██╔════╝██╔══██╗████╗  ██║██╔════╝██╔════╝╚══██╔══╝
+█████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║   
+██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║   
+███████╗██║  ██║██║ ╚████║███████╗███████║   ██║   
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝   
+				</p>
+			<p class="imgText">
+
+
+
+				We have been reading your expressions between content tests and find you to have a <span id="averageEmotion" class="caps">happy</span> baseline expression! 
+				<br /><br />
+<!-- 				<span id="reportResult">Looks like my work here is done!</span>
+				<br /><br /> -->
+				The more of your data I gather,<br />the more I understand what it means to be human.
+				<br /><br />
+				Type <span class="highlight">[?]</span> to learn more about Ernest
+				<br /><br />
+				Type <span class="highlight">[ESC]</span> to start over
+			</p>
+		</div>
+	</div>
+
+
+	<!-- ABOUT US -->
+	<div id="about" class="hoverWindow oceanTheme">
+		<div class="windowbar">
+			README.TXT
+			<div class="x">X</div>
+			<div class="max">&#10066;</div>
+			<div class="underscore">_</div>
+		</div>
+
+		<div class="infoBox">
+
+			<p class="pre">
+███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
+██╔════╝██╔══██╗████╗  ██║██╔════╝██╔════╝╚══██╔══╝
+█████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║   
+██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║   
+███████╗██║  ██║██║ ╚████║███████╗███████║   ██║   
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝   
+			</p>
+			<p>
+				When building Ernest we were asked who gets to decide if you should be happy? What if someone else's version of happy doesn't match yours? What if bad actors train the machine's model to think disturbing content is happy?
+				<br /><br />
+				Those are just hypotheticals. Ernest is designed to make you happy!
+				<br /><br />
+				&copy; 1993-2018 // Sean Mulholland + Matt Visco
+				<br /><br />
+				Type <span class="highlight">[?]</span> to close this window!
+			</p>
+		</div>
+	</div>
+
+	<!-- QUESTION BUG -->
+	<div id="bug">[?]</div>
+
+
+
+
+
+
+	<!-- HELLA SCRIPTS -->
+	<script src="js/vendors/libs/jquery.min.js"></script>
+
+	<!-- Threejs Scripts -->
+	<script src='lib/three.min.js'></script>
+	<script src='lib/dat.gui.min.js'></script>
+	<script src='lib/stats.min.js'></script>
+	<script src='lib/postprocessing/EffectComposer.js'></script>
+	<script src='lib/postprocessing/RenderPass.js'></script>
+	<script src='lib/postprocessing/ShaderPass.js'></script>
+	<script src='lib/postprocessing/MaskPass.js'></script>
+	<script src='lib/shaders/CopyShader.js'></script>
+	<script src='lib/shaders/FilmShader.js'></script>
+	<script src='lib/shaders/RGBShiftShader.js'></script>
+	<script src='js/vendors/BadTVShader.js'></script>
+	<script src='js/vendors/StaticShader.js'></script>
+
+	<!-- Emotion Scripts -->
+	<script src="js/vendors/libs/utils.js"></script>
+	<script src="js/vendors/clmtrackr.js"></script>
+	<script src="models/model_pca_20_svm.js"></script>
+	<script src="js/vendors/libs/Stats.js"></script>
+	<script src="js/vendors/libs/d3.min.js"></script>
+	<script src="js/vendors/emotion_classifier.js"></script>
+	<script src="js/vendors/emotionmodel.js"></script>
+
+	<script src="js/variables.js"></script>
+	<script src="js/static_intro.js"></script>
+	<script src="js/emotional_analysis.js"></script>
+	<script src="js/typing.js"></script>
+	<script src="js/analytics.js"></script>
+	<script src="js/composer.js"></script>
+
+	<script src="js/vendors/d3.min.js"></script>
+	<script src="js/barchart.js"></script>
+
+</body>
+
+</html>
