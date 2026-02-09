@@ -60,6 +60,11 @@ No build system, package manager, or install step. Open `index.html` directly in
 - `currentQuestion` — state machine position (0–6)
 - `TIMETILLRESET` — 15s inactivity timeout before auto-reset
 
+## Git Commit Rules
+
+- Do NOT add `Co-Authored-By` lines to commit messages
+- Always include related PRD or design docs (`docs/`) in commits alongside implementation changes
+
 ## Development Notes
 
 - Giphy API key is hardcoded in `variables.js`
