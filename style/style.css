@@ -192,7 +192,7 @@ canvas {
 	bottom: 5vh;
 	font-size: 40px;
 	color: #33ff33;
-	z-index: 15;
+	z-index: 5;
 }
 
 #facebox {
@@ -239,7 +239,7 @@ canvas {
 
 #dashboardFilters {
 	padding: 10px 0;
-	font-size: 18px;
+	font-size: 29px;
 }
 
 .dashboard-filter {
@@ -261,63 +261,85 @@ canvas {
 	display: none;
 }
 
-.dashboard-item {
-	display: flex;
-	align-items: flex-start;
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 	gap: 15px;
-	padding: 10px 0;
-	border-bottom: 1px solid rgba(251, 226, 147, 0.3);
 	text-align: left;
 }
 
-.dashboard-item img {
-	width: 80px;
-	height: 60px;
+.dashboard-card {
+	border: 1px solid rgba(251, 226, 147, 0.3);
+	padding: 10px;
+}
+
+.dashboard-card-inner {
+	display: flex;
+	gap: 10px;
+}
+
+.dashboard-card-thumb {
+	position: relative;
+	width: 50%;
+	flex-shrink: 0;
+	max-height: 250px;
+	overflow: hidden;
+}
+
+.dashboard-card-thumb img {
+	width: 100%;
+	height: 100%;
+	max-height: 250px;
 	object-fit: cover;
+	display: block;
 	border: 1px solid #fbe293;
-	flex-shrink: 0;
 }
 
-.dashboard-rank {
-	font-size: 24px;
-	min-width: 40px;
-	flex-shrink: 0;
+.dashboard-card-rank {
+	position: absolute;
+	top: 4px;
+	left: 4px;
+	background: rgba(53, 117, 66, 0.85);
+	padding: 2px 6px;
+	font-size: 18px;
 }
 
-.dashboard-item-details {
-	flex: 1;
+.dashboard-card-info {
+	width: 50%;
 	min-width: 0;
 }
 
-.dashboard-item-name {
-	font-size: 16px;
+.dashboard-card-name {
+	font-size: 29px;
 	margin-bottom: 4px;
 	text-transform: uppercase;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .emotion-bar-container {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	font-size: 14px;
+	gap: 6px;
+	font-size: 29px;
 	margin: 2px 0;
 }
 
 .emotion-bar-label {
-	width: 30px;
+	width: 55px;
 	flex-shrink: 0;
 	text-transform: uppercase;
 }
 
 .emotion-bar-track {
-	width: 100px;
-	height: 8px;
+	flex: 1;
+	height: 6px;
 	background: rgba(251, 226, 147, 0.2);
-	flex-shrink: 0;
 }
 
 .emotion-bar {
-	height: 8px;
+	height: 6px;
 	background: #fbe293;
 	transition: width 0.3s;
 }
@@ -327,12 +349,12 @@ canvas {
 }
 
 .emotion-bar-value {
-	font-size: 12px;
-	width: 32px;
+	font-size: 29px;
+	width: 55px;
 }
 
-.dashboard-item-count {
-	font-size: 14px;
+.dashboard-card-count {
+	font-size: 29px;
 	margin-top: 4px;
 	opacity: 0.7;
 }

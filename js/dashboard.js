@@ -6,7 +6,7 @@ var dashboardState = {
   manifest: null
 };
 
-var DASHBOARD_VISIBLE_ITEMS = 5;
+var DASHBOARD_PAGE_SIZE = 6;
 var EMOTION_FILTERS = ['all', 'happy', 'sad', 'angry', 'disgusted', 'fearful', 'surprised'];
 
 function toggleDashboard() {
@@ -45,10 +45,15 @@ function filterDashboard(emotion) {
   sortAndRenderDashboard();
 }
 
+function cycleDashboardFilter(direction) {
+  var currentIndex = EMOTION_FILTERS.indexOf(dashboardState.filter);
+  var nextIndex = (currentIndex + direction + EMOTION_FILTERS.length) % EMOTION_FILTERS.length;
+  filterDashboard(EMOTION_FILTERS[nextIndex]);
+}
+
 function scrollDashboard(direction) {
-  var maxIndex = Math.max(0, dashboardState.rankings.length - DASHBOARD_VISIBLE_ITEMS);
-  dashboardState.scrollIndex = Math.max(0, Math.min(maxIndex, dashboardState.scrollIndex + direction));
-  renderDashboardList();
+  var listEl = document.getElementById('dashboardList');
+  listEl.scrollTop += direction * 150;
 }
 
 function sortAndRenderDashboard() {
@@ -78,24 +83,29 @@ function renderDashboardList() {
     return;
   }
 
-  var start = dashboardState.scrollIndex;
-  var end = Math.min(start + DASHBOARD_VISIBLE_ITEMS, rankings.length);
-  var html = '';
+  var start = 0;
+  var end = rankings.length;
+  var html = '<div class="dashboard-grid">';
 
   for (var i = start; i < end; i++) {
     var item = rankings[i];
     var filename = getFilenameForContentId(item.content_id);
     var thumbSrc = filename ? 'content/' + filename : '';
 
-    html += '<div class="dashboard-item">';
-    html += '<span class="dashboard-rank">#' + (i + 1) + '</span>';
+    html += '<div class="dashboard-card">';
+    html += '<div class="dashboard-card-inner">';
 
+    // Thumbnail left side
+    html += '<div class="dashboard-card-thumb">';
     if (thumbSrc) {
       html += '<img src="' + thumbSrc + '" alt="' + item.content_id + '" />';
     }
+    html += '<span class="dashboard-card-rank">#' + (i + 1) + '</span>';
+    html += '</div>';
 
-    html += '<div class="dashboard-item-details">';
-    html += '<div class="dashboard-item-name">' + item.content_id + '</div>';
+    // Bars right side
+    html += '<div class="dashboard-card-info">';
+    html += '<div class="dashboard-card-name">' + item.content_id + '</div>';
 
     var emotions = ['happy', 'sad', 'angry', 'disgusted', 'fearful', 'surprised'];
     emotions.forEach(function(emo) {
@@ -109,16 +119,13 @@ function renderDashboardList() {
       html += '</div>';
     });
 
-    html += '<div class="dashboard-item-count">' + (item.total_reactions || 0) + ' reactions</div>';
+    html += '<div class="dashboard-card-count">' + (item.total_reactions || 0) + ' reactions</div>';
+    html += '</div>';
     html += '</div>';
     html += '</div>';
   }
 
-  // Scroll indicator
-  if (rankings.length > DASHBOARD_VISIBLE_ITEMS) {
-    html += '<p style="font-size:14px; opacity:0.7;">' + (start + 1) + '-' + end + ' of ' + rankings.length + '</p>';
-  }
-
+  html += '</div>';
   listEl.innerHTML = html;
 }
 

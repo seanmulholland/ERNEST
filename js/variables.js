@@ -151,7 +151,13 @@ document.onkeydown = function(evt) {
 
     // Dashboard controls — only when dashboard is visible
     if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
-        if (evt.key == 'ArrowUp') {
+        if (evt.key == 'ArrowLeft') {
+            evt.preventDefault();
+            cycleDashboardFilter(-1);
+        } else if (evt.key == 'ArrowRight') {
+            evt.preventDefault();
+            cycleDashboardFilter(1);
+        } else if (evt.key == 'ArrowUp') {
             evt.preventDefault();
             scrollDashboard(-1);
         } else if (evt.key == 'ArrowDown') {
