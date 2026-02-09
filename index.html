@@ -60,6 +60,12 @@
 				<br /><br />
 				<span id="guessResult">I'm not sure...</span>
 			</p>
+			<div id="collectiveResult" style="display:none;">
+				<hr style="border-color: #fbe293;" />
+				<p class="caps">Across All Visitors:</p>
+				<p id="contentRank"></p>
+				<p id="totalReactions"></p>
+			</div>
 		</div>
 	</div>
 
@@ -102,6 +108,23 @@
 	</div>
 
 
+	<!-- DASHBOARD -->
+	<div id="dashboard" class="hoverWindow grassTheme" style="display:none; overflow:hidden;">
+		<div class="windowbar">
+			Happiness Model
+			<div class="x">X</div>
+			<div class="max">&#10066;</div>
+			<div class="underscore">_</div>
+		</div>
+		<div class="infoBox" style="display:flex; flex-direction:column; overflow:hidden;">
+			<div id="dashboardFilters" class="caps"></div>
+			<div id="dashboardList" style="flex:1; overflow-y:auto;"></div>
+			<div id="dashboardControls" class="caps" style="padding:10px 0; border-top:1px solid #fbe293;">
+				[&larr;/&rarr;] Filter &nbsp; [&uarr;/&darr;] Scroll &nbsp; [0-6] Jump to filter &nbsp; [D/ESC] Close
+			</div>
+		</div>
+	</div>
+
 	<!-- ABOUT US -->
 	<div id="about" class="hoverWindow oceanTheme">
 		<div class="windowbar">
@@ -134,7 +157,10 @@
 	</div>
 
 	<!-- QUESTION BUG -->
-	<div id="bug">[?]</div>
+	<div id="bug">
+		<div>[?] About</div>
+		<div>[D] Dashboard</div>
+	</div>
 
 
 
@@ -142,6 +168,7 @@
 
 
 	<!-- HELLA SCRIPTS -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 	<script src="js/vendors/libs/jquery.min.js"></script>
 
 	<!-- Threejs Scripts -->
@@ -172,6 +199,7 @@
 	<script src="js/emotional_analysis.js"></script>
 	<script src="js/typing.js"></script>
 	<script src="js/analytics.js"></script>
+	<script src="js/dashboard.js"></script>
 	<script src="js/composer.js"></script>
 
 	<script src="js/vendors/d3.min.js"></script>
