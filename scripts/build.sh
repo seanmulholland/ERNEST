@@ -12,8 +12,13 @@ if [ -z "$SUPABASE_PUBLISHABLE_KEY" ]; then
   echo "WARNING: SUPABASE_PUBLISHABLE_KEY not set — Supabase reads will be disabled"
 fi
 
-# Replace placeholders in variables.js
-sed -i "s|%%SUPABASE_URL%%|${SUPABASE_URL:-}|g" js/variables.js
-sed -i "s|%%SUPABASE_PUBLISHABLE_KEY%%|${SUPABASE_PUBLISHABLE_KEY:-}|g" js/variables.js
+# Replace placeholders in variables.js (sed -i '' for macOS, sed -i for Linux)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed -i '' "s|%%SUPABASE_URL%%|${SUPABASE_URL:-}|g" js/variables.js
+  sed -i '' "s|%%SUPABASE_PUBLISHABLE_KEY%%|${SUPABASE_PUBLISHABLE_KEY:-}|g" js/variables.js
+else
+  sed -i "s|%%SUPABASE_URL%%|${SUPABASE_URL:-}|g" js/variables.js
+  sed -i "s|%%SUPABASE_PUBLISHABLE_KEY%%|${SUPABASE_PUBLISHABLE_KEY:-}|g" js/variables.js
+fi
 
 echo "Build complete — environment variables injected"
