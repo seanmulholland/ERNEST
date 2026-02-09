@@ -41,6 +41,15 @@ var blockInterval;
 var dontLook;
 var dontLookTimeout;
 
+// Content manifest system
+var contentManifest = null;
+var currentContentId = null;
+var sessionShownContent = [];
+
+// Supabase client (reads only — writes go through Edge Function)
+var supabase = null;
+var SUPABASE_URL = '%%SUPABASE_URL%%';  // Injected at build time by Netlify
+var SUPABASE_ANON_KEY = '%%SUPABASE_ANON_KEY%%';  // Injected at build time (read-only anon key)
 
 function initVariables() {
   // Face contour overlay
@@ -51,7 +60,9 @@ function initVariables() {
 	$( '#gif' ).hide();
 	$( '#reportCard' ).hide();
 	$( '#about' ).hide();
-	gifSrc();
+	$( '#dashboard' ).hide();
+	loadManifestAndSelectContent();
+	initSupabase();
 	createVideo();
 }
 
@@ -97,9 +108,11 @@ function resetAlize() {
 	$( '#analytics' ).hide();
 	$( '#gif' ).hide();
 	$( '#reportCard' ).hide();
+	$( '#dashboard' ).hide();
+	if (typeof dashboardState !== 'undefined') dashboardState.visible = false;
 	// $( '#about' ).hide();
 	$( '#facebox' ).show();
-	gifSrc();
+	selectContent();
 	activateStaticCanvas();
 }
 
@@ -114,7 +127,12 @@ document.onkeydown = function(evt) {
         isEscape = (evt.keyCode == 27);
     }
     if (isEscape) {
-        resetAlize();
+        // Close dashboard first if open, otherwise reset
+        if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
+            toggleDashboard();
+        } else {
+            resetAlize();
+        }
     }
 
     if ("key" in evt) {
@@ -125,14 +143,88 @@ document.onkeydown = function(evt) {
     if (isSlash) {
 		$( '#about' ).toggle();
     }
+
+    // Dashboard toggle — only when not waiting for Y/N input
+    if (!listeningForAnswer && (evt.key == 'd' || evt.key == 'D')) {
+        toggleDashboard();
+    }
+
+    // Dashboard controls — only when dashboard is visible
+    if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
+        if (evt.key == 'ArrowUp') {
+            evt.preventDefault();
+            scrollDashboard(-1);
+        } else if (evt.key == 'ArrowDown') {
+            evt.preventDefault();
+            scrollDashboard(1);
+        } else if (evt.key == '0') {
+            filterDashboard('all');
+        } else if (evt.key == '1') {
+            filterDashboard('happy');
+        } else if (evt.key == '2') {
+            filterDashboard('sad');
+        } else if (evt.key == '3') {
+            filterDashboard('angry');
+        } else if (evt.key == '4') {
+            filterDashboard('disgusted');
+        } else if (evt.key == '5') {
+            filterDashboard('fearful');
+        } else if (evt.key == '6') {
+            filterDashboard('surprised');
+        }
+    }
 };
 
-//  GIF Randomizer
-function gifSrc() {
-  var img = document.getElementsByClassName('gifSrc');
-  console.log(img);
+// Load content manifest and select first content item
+function loadManifestAndSelectContent() {
+  $.getJSON('content-manifest.json')
+    .done(function(manifest) {
+      contentManifest = manifest;
+      console.log('Content manifest loaded: ' + manifest.items.length + ' items');
+      selectContent();
+    })
+    .fail(function() {
+      console.warn('Failed to load content manifest, falling back to Giphy API');
+      gifSrcFallback();
+    });
+}
 
-  // Set fallback first to prevent undefined errors
+// Select a random content item from the manifest
+function selectContent() {
+  if (!contentManifest || contentManifest.items.length === 0) {
+    gifSrcFallback();
+    return;
+  }
+
+  var items = contentManifest.items;
+
+  // Reset shown list if all items have been displayed
+  if (sessionShownContent.length >= items.length) {
+    sessionShownContent = [];
+  }
+
+  // Filter to unshown items
+  var available = items.filter(function(item) {
+    return sessionShownContent.indexOf(item.id) === -1;
+  });
+
+  // Pick random item from available
+  var picked = available[Math.floor(Math.random() * available.length)];
+  sessionShownContent.push(picked.id);
+  currentContentId = picked.id;
+
+  var contentUrl = 'content/' + picked.filename;
+  var img = document.getElementsByClassName('gifSrc');
+  for (var i = 0; i < img.length; i++) {
+    img[i].src = contentUrl;
+  }
+  console.log('Content selected: ' + picked.id);
+}
+
+// Giphy API fallback (used when manifest is empty or unavailable)
+function gifSrcFallback() {
+  var img = document.getElementsByClassName('gifSrc');
+
   var fallbackUrl = 'https://media.giphy.com/media/100QWMdxQJzQC4/giphy.gif';
   for (var i = 0; i < img.length; i++) {
     if (!img[i].src || img[i].src === 'undefined' || img[i].src.indexOf('undefined') !== -1) {
@@ -140,10 +232,7 @@ function gifSrc() {
     }
   }
 
-  // Giphy tag query
   var q = "baby animal";
-
-  // Giphy API call
   $.get('https://api.giphy.com/v1/gifs/random?api_key=d4eZba5M86PHdo7wJuURZ3yCB3WHEEvF&tag=' + q )
     .done(function(response) {
       var imageUrl = null;
@@ -154,7 +243,6 @@ function gifSrc() {
           imageUrl = response.data.images.original.url;
         }
       }
-      
       if (imageUrl && typeof imageUrl === 'string' && imageUrl.length > 0) {
         console.log('gif loaded:', imageUrl);
         for (var i = 0; i < img.length; i++) {
@@ -166,7 +254,101 @@ function gifSrc() {
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
       console.warn('Giphy API call failed:', textStatus, errorThrown);
-      // Fallback already set above
+    });
+}
+
+// Initialize Supabase client (read-only — used for rankings and dashboard)
+function initSupabase() {
+  if (typeof window.supabase !== 'undefined' &&
+      SUPABASE_URL && SUPABASE_URL.indexOf('%%') === -1 &&
+      SUPABASE_ANON_KEY && SUPABASE_ANON_KEY.indexOf('%%') === -1) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase client initialized (read-only)');
+  } else {
+    console.warn('Supabase not configured — scores will not be persisted');
+  }
+}
+
+// Submit emotion reaction via Edge Function (server-side write)
+function submitReaction() {
+  if (!currentContentId || !SUPABASE_URL || SUPABASE_URL.indexOf('%%') !== -1) return;
+
+  var sessionId = sessionStorage.getItem('ernest_session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    sessionStorage.setItem('ernest_session_id', sessionId);
+  }
+
+  var total = totalEmotionsRead || 1;
+  var reactionData = {
+    content_id: currentContentId,
+    session_id: sessionId,
+    happy: emotions.happy / total,
+    sad: emotions.sad / total,
+    angry: emotions.anger / total,
+    disgusted: emotions.disgust / total,
+    fearful: emotions.fear / total,
+    surprised: emotions.surprise / total,
+    dominant_emotion: maxEmotion.emotion
+  };
+
+  var edgeFunctionUrl = SUPABASE_URL + '/functions/v1/submit-reaction';
+
+  fetch(edgeFunctionUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reactionData)
+  })
+  .then(function(response) {
+    if (!response.ok) {
+      console.warn('Score submit failed: HTTP ' + response.status);
+    } else {
+      console.log('Reaction submitted for: ' + currentContentId);
+    }
+  })
+  .catch(function(err) {
+    console.warn('Score submit error:', err);
+  });
+}
+
+// Fetch aggregate ranking for a single content item
+function fetchContentRanking(contentId) {
+  if (!supabase) return Promise.resolve(null);
+  return supabase
+    .from('content_rankings')
+    .select('*')
+    .eq('content_id', contentId)
+    .single()
+    .then(function(result) {
+      return result.error ? null : result.data;
+    });
+}
+
+// Fetch emotion rank position for a content item
+function fetchEmotionRank(contentId, emotion) {
+  if (!supabase) return Promise.resolve(null);
+  return supabase
+    .from('content_rankings')
+    .select('content_id, avg_' + emotion)
+    .order('avg_' + emotion, { ascending: false })
+    .then(function(result) {
+      if (result.error || !result.data) return null;
+      var rank = result.data.findIndex(function(r) {
+        return r.content_id === contentId;
+      });
+      return rank === -1 ? null : rank + 1;
+    });
+}
+
+// Fetch all content rankings for dashboard
+function fetchAllRankings() {
+  if (!supabase) return Promise.resolve([]);
+  return supabase
+    .from('content_rankings')
+    .select('*')
+    .order('total_reactions', { ascending: false })
+    .then(function(result) {
+      return result.error ? [] : result.data;
     });
 }
 

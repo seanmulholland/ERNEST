@@ -19,9 +19,10 @@ function initKeyListener () {
 					if (currentQuestion == 4) {
 						guessCorrect = true;
 						guessUpdate();
+						submitReaction();
 					} else if (currentQuestion == 6) { // If no means reset than include in this conditional
 						currentQuestion = 2;
-						gifSrc();
+						selectContent();
 					}
 				moveToNextStep();
 			} else if (event.key == 'n') {
@@ -31,6 +32,7 @@ function initKeyListener () {
 				} else if ( currentQuestion == 4) {
 					guessCorrect = false;
 					guessUpdate();
+					submitReaction();
 					moveToNextStep();
 				} else if (currentQuestion == 6) {
 					$( '#reportCard' ).show();
