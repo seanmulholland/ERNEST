@@ -41,6 +41,9 @@ function trackingLoop() {
     for (var i = 0;i < er.length;i++) {
       emotionValues.push(er[i].value);
     }
+    if (currentQuestion == 3) {
+      updateQ3Emotions(emotionValues);
+    }
     updateMaxEmotion(er, emotionValues);
     updateEmotionsAverage(emotionValues);
   }
@@ -95,6 +98,15 @@ function updateEmotionsAverage(emotionValues) {
       index++;
   }
   totalEmotionsRead++;
+}
+
+function updateQ3Emotions(emotionValues) {
+  var index = 0;
+  for (var key in q3Emotions) {
+    q3Emotions[key] += emotionValues[index];
+    index++;
+  }
+  q3FrameCount++;
 }
 
 /*

@@ -25,6 +25,10 @@ var emotions = {
 };
 var totalEmotionsRead = 0;
 
+// Q3-specific emotion accumulators (reset between rounds, used for confidence scoring)
+var q3Emotions = { anger: 0, disgust: 0, fear: 0, sad: 0, surprise: 0, happy: 0 };
+var q3FrameCount = 0;
+
 var smileTimeout;
 
 var listeningForAnswer = false;
@@ -74,6 +78,17 @@ function activateStaticCanvas() {
 	})
 }
 
+function resetQ3Emotions() {
+	q3Emotions = { anger: 0, disgust: 0, fear: 0, sad: 0, surprise: 0, happy: 0 };
+	q3FrameCount = 0;
+}
+
+// Map internal emotion key names to display names used in UI and database
+function mapEmotionName(key) {
+	var nameMap = { anger: 'angry', disgust: 'disgusted', fear: 'fearful', sad: 'sad', surprise: 'surprised', happy: 'happy' };
+	return nameMap[key] || key;
+}
+
 // Reset all flags here
 // TODO: this reset should prolly have some window of time until face search restarts (setTimeout around some variable reset, gotta think more to decide)
 function resetAlize() {
@@ -100,6 +115,7 @@ function resetAlize() {
 		happy: 0
 	};
 	totalEmotionsRead = 0;
+	resetQ3Emotions();
 	$('#text-container').empty();
 	$('#text-container').css({
 		top: 0
@@ -285,17 +301,18 @@ function submitReaction() {
     sessionStorage.setItem('ernest_session_id', sessionId);
   }
 
-  var total = totalEmotionsRead || 1;
+  var total = q3FrameCount || 1;
   var reactionData = {
     content_id: currentContentId,
     session_id: sessionId,
-    happy: emotions.happy / total,
-    sad: emotions.sad / total,
-    angry: emotions.anger / total,
-    disgusted: emotions.disgust / total,
-    fearful: emotions.fear / total,
-    surprised: emotions.surprise / total,
-    dominant_emotion: maxEmotion.emotion
+    happy: q3Emotions.happy / total,
+    sad: q3Emotions.sad / total,
+    angry: q3Emotions.anger / total,
+    disgusted: q3Emotions.disgust / total,
+    fearful: q3Emotions.fear / total,
+    surprised: q3Emotions.surprise / total,
+    dominant_emotion: maxEmotion.emotion,
+    user_confirmed: guessCorrect
   };
 
   var edgeFunctionUrl = SUPABASE_URL + '/functions/v1/submit-reaction';

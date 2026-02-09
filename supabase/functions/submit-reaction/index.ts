@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  const { content_id, session_id, happy, sad, angry, disgusted, fearful, surprised, dominant_emotion } = body;
+  const { content_id, session_id, happy, sad, angry, disgusted, fearful, surprised, dominant_emotion, user_confirmed } = body;
 
   // Validate required fields
   if (typeof content_id !== "string" || content_id.length === 0 || content_id.length > 200) {
@@ -120,6 +120,13 @@ Deno.serve(async (req) => {
     }
   }
 
+  if (user_confirmed !== null && user_confirmed !== undefined && typeof user_confirmed !== "boolean") {
+    return new Response(JSON.stringify({ error: "Invalid user_confirmed" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    });
+  }
+
   // Write to Supabase using service role key (server-side only)
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -135,6 +142,7 @@ Deno.serve(async (req) => {
     fearful,
     surprised,
     dominant_emotion,
+    user_confirmed: user_confirmed ?? null,
   });
 
   if (error) {

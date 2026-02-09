@@ -13,6 +13,7 @@ CREATE TABLE reactions (
   fearful real NOT NULL DEFAULT 0,
   surprised real NOT NULL DEFAULT 0,
   dominant_emotion text NOT NULL,
+  user_confirmed boolean DEFAULT NULL,
   created_at timestamptz DEFAULT now()
 );
 
@@ -38,6 +39,7 @@ CREATE VIEW content_rankings AS
 SELECT
   content_id,
   COUNT(*) as total_reactions,
+  COUNT(*) FILTER (WHERE user_confirmed = true) as confirmed_reactions,
   AVG(happy) as avg_happy,
   AVG(sad) as avg_sad,
   AVG(angry) as avg_angry,
