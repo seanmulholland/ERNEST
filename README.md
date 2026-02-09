@@ -14,16 +14,37 @@ Through ERNEST we hope to open a dialogue around the ethics of gathering the dat
 
 ERNEST presents itself as a retro terminal-style AI character who engages you in conversation. Using your webcam, it tracks your facial expressions in real time via CLMtrackr (Constrained Local Models) and classifies six emotions — happy, sad, angry, disgusted, fearful, and surprised — using a pre-trained logistic regression model. As you interact, Three.js renders your webcam feed with post-processing shader effects (BadTV distortion, RGB shift, film grain, static) that respond to your proximity to the camera. ERNEST guides you through a series of prompts and emotional triggers, then reveals what it detected about your emotional state.
 
-## Running
+## Live Demo
 
-Open `index.html` in a modern browser and grant webcam access. No build tools, install steps, or server required — all dependencies are vendored.
+https://ernest-azile.netlify.app
+
+## Running Locally
+
+Requires a local HTTP server (manifest and Supabase SDK need `fetch`):
+
+```bash
+# 1. Copy .env.local and fill in your Supabase credentials
+#    SUPABASE_URL=https://yourproject.supabase.co
+#    SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+
+# 2. Inject credentials and start server
+bash scripts/local-dev.sh
+
+# 3. Open http://localhost:8000 and grant webcam access
+
+# 4. When done, restore placeholders
+git checkout js/variables.js
+```
+
+See `docs/PRD-happiness-model.md` for full setup including Supabase project creation, SQL schema, and Edge Function deployment.
 
 ## Tech Stack
 
 - **Three.js** — 3D rendering with WebGL post-processing shaders
 - **CLMtrackr** — real-time facial feature tracking
 - **D3.js** — emotion distribution visualization
-- **Giphy API** — emotional trigger content
+- **Supabase** — collective emotion score storage (PostgreSQL + Edge Functions)
+- **Netlify** — static hosting with build-time credential injection
 
 ## Exhibitions
 
