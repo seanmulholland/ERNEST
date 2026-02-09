@@ -1,7 +1,7 @@
 function setup () {
 	initVariables();
 	initStatic();
-	startTracking();
+	// startTracking() is now called when video is ready in createVideo()
 	// initializeEscToReset();
 	initKeyListener();
 }

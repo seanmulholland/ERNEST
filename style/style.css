@@ -5,12 +5,22 @@ body {
 	font-family: 'VT323', monospace;
 }
 
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 1;
+}
+
 .terminal {
 	overflow: hidden;
 	position: absolute;
 	top: 55%;
 	height: 45%;
 	width: 100%;
+	z-index: 5;
 }
 
 .terminal-text {
@@ -35,19 +45,22 @@ body {
 #overlay {
 	transform: scaleX(-1);
 	/* scaling w/h here since altering the source video screws up the faceDistance...pixelation may look ok on analog */
+	/* width and height will be set by JavaScript to match video display */
 	width: 800px;
 	height: 600px;
 /*	opacity: 0; for some reason pre-setting this kills the overlay draw, so trigger a fadeOut in the JS */
 	position: absolute;
 	margin: auto;
 	top: 0; left: 0; bottom: 0; right: 0;
-
+	z-index: 3;
+	image-rendering: pixelated; /* Keep crisp when scaling */
 }
  #overlay-wrapper {
  	position: fixed;
  	width: 100vw;
  	height: 100vh;
-}
+ 	z-index: 3;
+ }
 
 /*#gif, #analytics, #reportCard, #about*/
 
@@ -60,6 +73,7 @@ body {
 	border: 3px ridge;
     font-size: 29px;
     text-align: center;
+	z-index: 15;
 }
 
 .grassTheme {
@@ -178,6 +192,7 @@ body {
 	bottom: 5vh;
 	font-size: 40px;
 	color: #33ff33;
+	z-index: 15;
 }
 
 #facebox {
@@ -193,6 +208,7 @@ body {
 	text-align: center;
 	font-size: 57px;
 	color: #33ff33;
+	z-index: 10;
 }
 
 .pre {

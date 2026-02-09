@@ -11,11 +11,20 @@ var emotionData = ec.getBlank();
 
 function startTracking() {
   // start tracking
-  ctrack.start(video);
+  if (video && ctrack) {
+    console.log('Starting face tracking...');
+    ctrack.start(video);
+    console.log('Face tracking started');
+  } else {
+    console.error('Cannot start tracking: video or ctrack not available', {video: !!video, ctrack: !!ctrack});
+  }
 }
 
 // Where the magic happens
 function trackingLoop() {
+  if (!overlay || !overlayCC || !ctrack) {
+    return;
+  }
   overlayCC.clearRect(0, 0, overlay.width, overlay.height);
   if (ctrack.getCurrentPosition()) {
     ctrack.draw(overlay, undefined, 'vertices'); // vertices mesh vs. contour

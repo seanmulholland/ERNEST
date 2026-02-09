@@ -3,7 +3,7 @@ var overlay;
 var overlayCC;
 
 var foundFace = false;
-var faceDistance = 0;
+var faceDistance = 1.1; // Start at faceLow for maximum shader effects
 var faceLow = 1.1;
 var faceHigh = 1.5;
 var faceDetectionIsCurrent = false;
@@ -132,42 +132,119 @@ function gifSrc() {
   var img = document.getElementsByClassName('gifSrc');
   console.log(img);
 
+  // Set fallback first to prevent undefined errors
+  var fallbackUrl = 'https://media.giphy.com/media/100QWMdxQJzQC4/giphy.gif';
+  for (var i = 0; i < img.length; i++) {
+    if (!img[i].src || img[i].src === 'undefined' || img[i].src.indexOf('undefined') !== -1) {
+      img[i].src = fallbackUrl;
+    }
+  }
+
   // Giphy tag query
-  q = "baby animal";
+  var q = "baby animal";
 
   // Giphy API call
-  var gif = $.get('https://api.giphy.com/v1/gifs/random?api_key=d4eZba5M86PHdo7wJuURZ3yCB3WHEEvF&tag=' + q );
-
-  gif.done ( function(data) {
-      data = JSON.parse(gif.responseText).data.image_url;
-      console.log('gif');
-	  for (var i = 0;i < img.length;i++) {
-	  	img[i].src = data;
-	  }
-  });
+  $.get('https://api.giphy.com/v1/gifs/random?api_key=d4eZba5M86PHdo7wJuURZ3yCB3WHEEvF&tag=' + q )
+    .done(function(response) {
+      var imageUrl = null;
+      if (response && response.data) {
+        if (response.data.image_url) {
+          imageUrl = response.data.image_url;
+        } else if (response.data.images && response.data.images.original && response.data.images.original.url) {
+          imageUrl = response.data.images.original.url;
+        }
+      }
+      
+      if (imageUrl && typeof imageUrl === 'string' && imageUrl.length > 0) {
+        console.log('gif loaded:', imageUrl);
+        for (var i = 0; i < img.length; i++) {
+          img[i].src = imageUrl;
+        }
+      } else {
+        console.warn('Giphy API response format unexpected, using fallback');
+      }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      console.warn('Giphy API call failed:', textStatus, errorThrown);
+      // Fallback already set above
+    });
 }
 
 function createVideo() {
 	//Use webcam
 	video = document.getElementById('videoel');
+	if (!video) {
+		console.error('Video element not found');
+		return;
+	}
+	
 	video.width = 320;
 	video.height = 240;
 	video.autoplay = true;
-	video.loop = true;
-	video.volume  = 0;
-	//Webcam video
-	window.URL = window.URL || window.webkitURL;
-	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-	//get webcam
-	navigator.getUserMedia({
-		video: true
-	}, function(stream) {
-		//on webcam enabled
-		// video.src = window.URL.createObjectURL(stream);
-		video.srcObject=stream;
-	}, function(error) {
-		prompt.innerHTML = 'Unable to capture WebCam. Please reload the page.';
-	});
+	video.playsInline = true;
+	video.muted = true;
+	video.volume = 0;
+	
+	// Modern API first, fallback to legacy
+	if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+		// Modern API
+		navigator.mediaDevices.getUserMedia({
+			video: {
+				width: 320,
+				height: 240
+			}
+		})
+		.then(function(stream) {
+			video.srcObject = stream;
+			console.log('Webcam access granted');
+			// Wait for video to start playing before starting tracking
+			video.addEventListener('playing', function() {
+				console.log('Video is playing, starting face tracking');
+				if (typeof startTracking === 'function') {
+					startTracking();
+				}
+			}, { once: true });
+			// Also try playing the video
+			video.play().catch(function(err) {
+				console.error('Error playing video:', err);
+			});
+		})
+		.catch(function(error) {
+			console.error('Error accessing webcam:', error);
+			// Try legacy API as fallback
+			tryLegacyGetUserMedia();
+		});
+	} else {
+		// Legacy API fallback
+		tryLegacyGetUserMedia();
+	}
+	
+	function tryLegacyGetUserMedia() {
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		if (navigator.getUserMedia) {
+			navigator.getUserMedia({
+				video: true
+			}, function(stream) {
+				video.srcObject = stream;
+				console.log('Webcam access granted (legacy API)');
+				// Wait for video to start playing before starting tracking
+				video.addEventListener('playing', function() {
+					console.log('Video is playing (legacy), starting face tracking');
+					if (typeof startTracking === 'function') {
+						startTracking();
+					}
+				}, { once: true });
+				// Also try playing the video
+				video.play().catch(function(err) {
+					console.error('Error playing video:', err);
+				});
+			}, function(error) {
+				console.error('Unable to capture WebCam:', error);
+			});
+		} else {
+			console.error('getUserMedia not supported in this browser');
+		}
+	}
 };
 
 
