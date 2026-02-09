@@ -3,7 +3,7 @@ function showAnalytics() {
   $( '#collectiveResult' ).hide();
 
   // Fetch collective ranking for current content
-  if (currentContentId && supabase) {
+  if (currentContentId && supabaseClient) {
     var emotion = maxEmotion.emotion || 'happy';
     Promise.all([
       fetchEmotionRank(currentContentId, emotion),

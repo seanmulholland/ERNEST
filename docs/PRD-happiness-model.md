@@ -168,11 +168,11 @@ Replace the `gifSrc()` function in `variables.js` with manifest-driven content s
 
 ```javascript
 var SUPABASE_URL = 'https://<project-ref>.supabase.co';
-var SUPABASE_ANON_KEY = '<anon-key>';
-var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var SUPABASE_PUBLISHABLE_KEY = '<anon-key>';
+var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 ```
 
-> **Note:** The anon key is safe to expose in client-side code. Row Level Security (RLS) policies control what operations are allowed.
+> **Note:** The publishable key is safe to expose in client-side code. Row Level Security (RLS) policies control what operations are allowed.
 
 ### 4.2 Database Schema
 
@@ -688,18 +688,18 @@ These are explicitly **out of scope** for this PRD but noted for future referenc
 ## Addendum A: Security Hardening for Public Deployment
 
 **Date:** 2026-02-08
-**Context:** ERNEST will be deployed as a public web demo. The original PRD had the Supabase anon key hardcoded in `variables.js` with an open INSERT RLS policy, which would allow anyone to script fake reactions directly against the database.
+**Context:** ERNEST will be deployed as a public web demo. The original PRD had the Supabase publishable key hardcoded in `variables.js` with an open INSERT RLS policy, which would allow anyone to script fake reactions directly against the database.
 
 ### Problem
 
 With a public repo and public deployment:
-1. The Supabase anon key is visible in browser source and in git history
+1. The Supabase publishable key is visible in browser source and in git history
 2. An open INSERT policy lets anyone write arbitrary data to `reactions`
 3. Rankings can be trivially gamed; free tier storage/bandwidth can be exhausted
 
 ### Solution: Edge Function Proxy
 
-All **writes** now go through a Supabase Edge Function. The browser never gets direct write access to the database. **Reads** remain client-side via the anon key (reading aggregate rankings is not a security concern).
+All **writes** now go through a Supabase Edge Function. The browser never gets direct write access to the database. **Reads** remain client-side via the publishable key (reading aggregate rankings is not a security concern).
 
 ```
 Browser                          Supabase
@@ -711,7 +711,7 @@ Browser                          Supabase
   │                                │   └── INSERT via service role key
   │                                │         (bypasses RLS)
   │                                │
-  │── Supabase JS SDK ──────────► │ Direct read (anon key)
+  │── Supabase JS SDK ──────────► │ Direct read (publishable key)
   │   SELECT content_rankings      │   RLS allows SELECT only
   │                                │
 ```
@@ -720,9 +720,9 @@ Browser                          Supabase
 
 | Area | Original | Updated |
 |------|----------|---------|
-| **Writes** | Supabase JS client with anon key, open INSERT RLS | `fetch()` POST to Edge Function; no INSERT RLS policy |
-| **Reads** | Supabase JS client with anon key | Unchanged — anon key for SELECT only |
-| **Credentials in code** | Hardcoded `SUPABASE_URL` and `SUPABASE_ANON_KEY` | `%%PLACEHOLDER%%` tokens replaced at build time |
+| **Writes** | Supabase JS client with publishable key, open INSERT RLS | `fetch()` POST to Edge Function; no INSERT RLS policy |
+| **Reads** | Supabase JS client with publishable key | Unchanged — publishable key for SELECT only |
+| **Credentials in code** | Hardcoded `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` | `%%PLACEHOLDER%%` tokens replaced at build time |
 | **Credentials in repo** | Committed in `variables.js` | Never committed; set as Netlify environment variables |
 | **Rate limiting** | None (listed as future) | Implemented in Edge Function: 10 requests/minute/IP |
 | **Payload validation** | None | Edge Function validates all fields, score ranges, emotion values |
@@ -775,8 +775,8 @@ js/variables.js (in repo)          js/variables.js (deployed)
 ──────────────────────────         ──────────────────────────
 var SUPABASE_URL =                 var SUPABASE_URL =
   '%%SUPABASE_URL%%';        →      'https://xyz.supabase.co';
-var SUPABASE_ANON_KEY =            var SUPABASE_ANON_KEY =
-  '%%SUPABASE_ANON_KEY%%';   →      'eyJ...actual-key...';
+var SUPABASE_PUBLISHABLE_KEY =            var SUPABASE_PUBLISHABLE_KEY =
+  '%%SUPABASE_PUBLISHABLE_KEY%%';   →      'sb_publishable_...';
 ```
 
 **Netlify environment variables to set** (Site settings > Environment variables):
@@ -784,7 +784,7 @@ var SUPABASE_ANON_KEY =            var SUPABASE_ANON_KEY =
 | Variable | Value | Notes |
 |----------|-------|-------|
 | `SUPABASE_URL` | `https://<project-ref>.supabase.co` | Found in Supabase Settings > API |
-| `SUPABASE_ANON_KEY` | `eyJ...` | The **anon/public** key (safe for reads) |
+| `SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_...` | The **publishable** key (safe for reads) |
 
 The **service role key** is never set in Netlify — it lives only in the Supabase Edge Function runtime environment, where it is automatically available.
 
@@ -793,7 +793,7 @@ The **service role key** is never set in Netlify — it lives only in the Supaba
 1. Create Supabase project and run `scripts/supabase-setup.sql` in SQL Editor
 2. Deploy Edge Function: `supabase functions deploy submit-reaction`
 3. Connect GitHub repo to Netlify
-4. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in Netlify environment variables
+4. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in Netlify environment variables
 5. Deploy — `scripts/build.sh` runs automatically, injecting credentials
 6. Verify: submit a reaction, check Supabase dashboard for the row
 7. Verify: open DevTools on deployed site, confirm no service role key is exposed

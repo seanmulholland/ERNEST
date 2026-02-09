@@ -17,3 +17,6 @@
 
 # Node modules (if you add any in the future)
 node_modules/
+
+# Local environment (contains Supabase credentials)
+.env.local

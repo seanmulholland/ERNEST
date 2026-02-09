@@ -47,9 +47,9 @@ var currentContentId = null;
 var sessionShownContent = [];
 
 // Supabase client (reads only — writes go through Edge Function)
-var supabase = null;
+var supabaseClient = null;
 var SUPABASE_URL = '%%SUPABASE_URL%%';  // Injected at build time by Netlify
-var SUPABASE_ANON_KEY = '%%SUPABASE_ANON_KEY%%';  // Injected at build time (read-only anon key)
+var SUPABASE_PUBLISHABLE_KEY = '%%SUPABASE_PUBLISHABLE_KEY%%';  // Injected at build time (read-only publishable key)
 
 function initVariables() {
   // Face contour overlay
@@ -259,10 +259,10 @@ function gifSrcFallback() {
 
 // Initialize Supabase client (read-only — used for rankings and dashboard)
 function initSupabase() {
-  if (typeof window.supabase !== 'undefined' &&
+  if (window.supabase && window.supabase.createClient &&
       SUPABASE_URL && SUPABASE_URL.indexOf('%%') === -1 &&
-      SUPABASE_ANON_KEY && SUPABASE_ANON_KEY.indexOf('%%') === -1) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      SUPABASE_PUBLISHABLE_KEY && SUPABASE_PUBLISHABLE_KEY.indexOf('%%') === -1) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     console.log('Supabase client initialized (read-only)');
   } else {
     console.warn('Supabase not configured — scores will not be persisted');
@@ -313,12 +313,12 @@ function submitReaction() {
 
 // Fetch aggregate ranking for a single content item
 function fetchContentRanking(contentId) {
-  if (!supabase) return Promise.resolve(null);
-  return supabase
+  if (!supabaseClient) return Promise.resolve(null);
+  return supabaseClient
     .from('content_rankings')
     .select('*')
     .eq('content_id', contentId)
-    .single()
+    .maybeSingle()
     .then(function(result) {
       return result.error ? null : result.data;
     });
@@ -326,8 +326,8 @@ function fetchContentRanking(contentId) {
 
 // Fetch emotion rank position for a content item
 function fetchEmotionRank(contentId, emotion) {
-  if (!supabase) return Promise.resolve(null);
-  return supabase
+  if (!supabaseClient) return Promise.resolve(null);
+  return supabaseClient
     .from('content_rankings')
     .select('content_id, avg_' + emotion)
     .order('avg_' + emotion, { ascending: false })
@@ -342,8 +342,8 @@ function fetchEmotionRank(contentId, emotion) {
 
 // Fetch all content rankings for dashboard
 function fetchAllRankings() {
-  if (!supabase) return Promise.resolve([]);
-  return supabase
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
     .from('content_rankings')
     .select('*')
     .order('total_reactions', { ascending: false })
