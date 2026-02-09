@@ -1,6 +1,7 @@
 var dashboardState = {
   visible: false,
   filter: 'all',
+  dataMode: 'weighted',
   scrollIndex: 0,
   rankings: [],
   manifest: null
@@ -8,6 +9,7 @@ var dashboardState = {
 
 var DASHBOARD_PAGE_SIZE = 6;
 var EMOTION_FILTERS = ['all', 'happy', 'sad', 'angry', 'disgusted', 'fearful', 'surprised'];
+var DATA_MODES = ['all', 'weighted', 'confirmed'];
 
 function toggleDashboard() {
   dashboardState.visible = !dashboardState.visible;
@@ -17,7 +19,7 @@ function toggleDashboard() {
     dashboardState.manifest = contentManifest;
     renderDashboardFilters();
 
-    fetchAllRankings().then(function(rankings) {
+    fetchRankingsForMode().then(function(rankings) {
       dashboardState.rankings = rankings || [];
       sortAndRenderDashboard();
     });
@@ -29,7 +31,7 @@ function toggleDashboard() {
 }
 
 function renderDashboardFilters() {
-  var html = '';
+  var html = '<span class="dashboard-mode">[W] ' + dashboardState.dataMode.toUpperCase() + '</span> ';
   EMOTION_FILTERS.forEach(function(f, i) {
     var activeClass = (f === dashboardState.filter) ? ' active' : '';
     var label = '[' + (i === 0 ? '0' : i) + '] ' + f.toUpperCase();
@@ -54,6 +56,37 @@ function cycleDashboardFilter(direction) {
 function scrollDashboard(direction) {
   var listEl = document.getElementById('dashboardList');
   listEl.scrollTop += direction * 150;
+}
+
+function cycleDashboardDataMode() {
+  var currentIndex = DATA_MODES.indexOf(dashboardState.dataMode);
+  var nextIndex = (currentIndex + 1) % DATA_MODES.length;
+  dashboardState.dataMode = DATA_MODES[nextIndex];
+  dashboardState.scrollIndex = 0;
+  renderDashboardFilters();
+  fetchRankingsForMode().then(function(rankings) {
+    dashboardState.rankings = rankings || [];
+    sortAndRenderDashboard();
+  });
+}
+
+function fetchRankingsForMode() {
+  if (!supabaseClient) return Promise.resolve([]);
+  var viewName;
+  if (dashboardState.dataMode === 'weighted') {
+    viewName = 'weighted_content_rankings';
+  } else if (dashboardState.dataMode === 'confirmed') {
+    viewName = 'confirmed_content_rankings';
+  } else {
+    viewName = 'content_rankings';
+  }
+  return supabaseClient
+    .from(viewName)
+    .select('*')
+    .order('total_reactions', { ascending: false })
+    .then(function(result) {
+      return result.error ? [] : result.data;
+    });
 }
 
 function sortAndRenderDashboard() {

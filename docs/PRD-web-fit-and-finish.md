@@ -299,14 +299,61 @@ function submitReaction() {
 
 This section reserves topics for future addendums to this PRD. Each will be appended as a lettered addendum (Addendum A, B, etc.) when work begins.
 
-### Reserved: Addendum A — Weighted Scoring for Confirmed vs. Unconfirmed Reactions
+### Addendum A — Weighted Scoring for Confirmed vs. Unconfirmed Reactions
 
-**Scope:** Update the `content_rankings` view (or create a new weighted view) to apply different weights to confirmed vs. unconfirmed reactions. Options include:
-- Weighted average: `SUM(emotion * weight) / SUM(weight)` where weight = 1.0 for confirmed, configurable for unconfirmed
-- Confirmed-only view: A second view that only includes `user_confirmed = true` rows
-- Confidence interval: Use confirmation rate as a quality signal for the aggregate scores
+**Status:** Implemented
+**Branch:** `Web-Fit-and-Finish`
 
-**Dependencies:** Requires sufficient data in the `user_confirmed` column to be meaningful.
+#### Weight Design
+
+Every submitted reaction has `user_confirmed` set to `true` or `false` — there is no code path that submits without an answer. (If the user times out, `resetAlize()` fires without calling `submitReaction()`.) Any legacy NULL rows from before the column was added are treated as rejected.
+
+| Tier | `user_confirmed` | Weight | Rationale |
+|------|-------------------|--------|-----------|
+| Confirmed | `true` | **1.0** | User validated the prediction. Gold standard. |
+| Rejected / legacy | `false` or `NULL` | **0.25** | User rejected the prediction, or legacy data without feedback. |
+
+**Why not 0 for rejected?** The raw emotion scores are still real facial observations from CLMtrackr. The camera did see those expressions. What failed is the dominant emotion classification — the user's felt emotion didn't match their face. With a small dataset, discarding 25% of useful signal is better than discarding 100%.
+
+**Why 0.25?** The 4:1 ratio means one confirmed reaction outweighs four rejected ones. In label noise literature, explicitly rejected labels warrant heavy discounting. 0.5 would be too generous — it would mean a coin-flip confidence in data the user explicitly said was wrong.
+
+**Effective ratio example:** 1 confirmed = 4 rejected. A content item with 2 confirmed-happy + 4 rejected-sad reactions: confirmed contributes 2.0 weight (67%), rejected contributes 1.0 weight (33%). Validated data clearly dominates.
+
+#### Database Changes
+
+Two new Postgres views, both outputting the same `avg_*` column names as `content_rankings` so the dashboard rendering code works unchanged — only the data source name changes:
+
+- **`weighted_content_rankings`** — weighted averages using `SUM(score * weight) / SUM(weight)` with the two-tier weights above
+- **`confirmed_content_rankings`** — only `user_confirmed = true` rows, simple `AVG()`
+
+The existing `content_rankings` view is unchanged and serves as the "ALL" (unweighted) mode.
+
+Migration file: `supabase/migrations/20260209200000_add_weighted_views.sql`
+
+#### Dashboard Integration
+
+A new data mode toggle cycles through three views:
+
+| Mode | View | Description |
+|------|------|-------------|
+| ALL | `content_rankings` | Unweighted averages across all reactions |
+| WEIGHTED | `weighted_content_rankings` | Confirmed reactions weighted 1.0, rejected/legacy weighted 0.25 |
+| CONFIRMED | `confirmed_content_rankings` | Only user-confirmed reactions |
+
+- Default mode: **WEIGHTED**
+- Cycle with **W** key (shown in dashboard filter bar and controls hint)
+- Emotion filters (0-6, arrows) work independently within each data mode
+- In CONFIRMED mode with no confirmed reactions, dashboard shows "No reactions yet"
+
+#### Files Modified
+
+| File | Changes |
+|------|---------|
+| `js/dashboard.js` | Added `dataMode` state, `DATA_MODES`, `cycleDashboardDataMode()`, `fetchRankingsForMode()`; updated `renderDashboardFilters()` to show mode label; updated `toggleDashboard()` to use mode-aware fetch |
+| `js/variables.js` | Added `W` key handler in dashboard keyboard block |
+| `index.html` | Added `[W] Data mode` to `#dashboardControls` hint |
+| `scripts/supabase-setup.sql` | Added `weighted_content_rankings` and `confirmed_content_rankings` view definitions |
+| `supabase/migrations/20260209200000_add_weighted_views.sql` | Migration creating the two views |
 
 ### Reserved: Addendum B — UI Tweaks and Visual Polish
 

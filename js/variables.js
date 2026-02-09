@@ -193,6 +193,8 @@ document.onkeydown = function(evt) {
             filterDashboard('fearful');
         } else if (evt.key == '6') {
             filterDashboard('surprised');
+        } else if (evt.key == 'w' || evt.key == 'W') {
+            cycleDashboardDataMode();
         }
     }
 };

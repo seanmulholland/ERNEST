@@ -242,6 +242,13 @@ canvas {
 	font-size: 29px;
 }
 
+.dashboard-mode {
+	padding: 2px 6px;
+	margin-right: 8px;
+	border: 1px solid #fbe293;
+	cursor: default;
+}
+
 .dashboard-filter {
 	padding: 2px 4px;
 	cursor: default;
