@@ -295,7 +295,7 @@ function submitReaction() {
 
 ---
 
-## 8. Future Addendums
+## 8. Addendums Following core Happiness Model Updates
 
 This section reserves topics for future addendums to this PRD. Each will be appended as a lettered addendum (Addendum A, B, etc.) when work begins.
 
@@ -355,14 +355,75 @@ A new data mode toggle cycles through three views:
 | `scripts/supabase-setup.sql` | Added `weighted_content_rankings` and `confirmed_content_rankings` view definitions |
 | `supabase/migrations/20260209200000_add_weighted_views.sql` | Migration creating the two views |
 
-### Reserved: Addendum B — UI Tweaks and Visual Polish
+### Addendum B — CRT TV Frame UI Wrapper
 
-**Scope:** Visual and interaction improvements to the web experience. May include:
-- Typography and layout refinements
-- Animation and transition polish
-- Mobile responsiveness
-- Accessibility improvements
-- Dashboard visual enhancements
+**Status:** Implemented
+**Branch:** `Web-Fit-and-Finish`
+
+#### Overview
+
+Wraps the entire ERNEST experience inside a Sony PVM-9L2 CRT monitor simulation. The webcam feed, terminal text, facebox, and all dialog windows render within the CRT screen area. Physical buttons on the TV map to existing interactions plus fun Easter eggs.
+
+#### Architecture
+
+A `.pvm-container > .bezel > .screen-wrapper > .screen-content` hierarchy replaces the full-viewport layout. The `#screen-content` div is the **positioned ancestor** (`position: absolute; overflow: hidden`) for all existing elements. Everything previously using `position: fixed` with viewport units (`vw`/`vh`) switches to `position: absolute` with percentage units relative to this container.
+
+The Three.js renderer canvas gets appended to `#screen-content` (instead of `document.body`), and all sizing/resize logic references `screenContainer.clientWidth/Height` instead of `window.innerWidth/Height`.
+
+CSS CRT effects (scanlines, RGB subpixel overlay, flicker, animated scan bar) layer on top of the existing Three.js shader effects — the shaders are dynamic (face-distance-driven), the CSS is static ambiance.
+
+#### Positioning Conversion
+
+| Selector | Before | After |
+|----------|--------|-------|
+| `canvas` | `position: fixed; width: 100vw; height: 100vh` | `position: absolute; width: 100%; height: 100%` |
+| `#overlay-wrapper` | `position: fixed; width: 100vw; height: 100vh` | `position: absolute; width: 100%; height: 100%` |
+| `#facebox` | `position: fixed; height: 67vh; width: 67vw` | `position: absolute; height: 67%; width: 67%` |
+| `.hoverWindow` | `position: fixed; height: 75vh; width: 75vw` | `position: absolute; height: 75%; width: 75%` |
+| `#bug` | `position: fixed; right: 7vw; bottom: 5vh` | `position: absolute; right: 7%; bottom: 5%` |
+
+#### Z-Index Stack (within screen-content)
+
+| Z | Element |
+|---|---------|
+| 1 | Three.js canvas (renderer) |
+| 3 | #overlay-wrapper / #overlay (face mesh) |
+| 5 | .terminal, #bug |
+| 10 | #facebox |
+| 15 | .hoverWindow (all dialogs) |
+| 20 | .crt-overlay (scanlines — pointer-events: none) |
+| 21 | .scan-line (animated bar — pointer-events: none) |
+
+#### TV Control Buttons
+
+| Button | Action | Equivalent |
+|--------|--------|------------|
+| MENU | `toggleDashboard()` | D key |
+| ABOUT | `$('#about').toggle()` | ? key |
+| DEGAUSS | `triggerDegauss()` — screen shake animation | Easter egg |
+| POWER | `togglePower()` — CRT power on/off animation | Easter egg |
+
+Power off is cosmetic only (hides screen content, dims LED). Webcam/tracking continue running. Power on triggers degauss animation automatically.
+
+#### CRT Effects
+
+- **Scanlines:** Horizontal line pattern via CSS `linear-gradient` on `.crt-overlay` (z:20)
+- **RGB subpixel:** Vertical RGB stripe pattern via CSS `linear-gradient` on `.crt-overlay`
+- **Scan bar:** Animated bright bar scrolling top-to-bottom on `.scan-line` (z:21)
+- **Flicker:** Subtle opacity oscillation on `.screen-content`
+- **Degauss:** Scale + translate + brightness burst animation on `.screen-wrapper`
+- **Power off:** Horizontal line collapse animation
+- **Power on:** Line bloom + auto-degauss animation
+
+#### Files Modified
+
+| File | Changes |
+|------|---------|
+| `index.html` | Wrapped body content in TV frame hierarchy; added CRT overlay divs; added control bar with buttons; added `tv-controls.js` script tag |
+| `style/style.css` | Added ~100 lines TV frame CSS; converted 5 selectors from fixed/vw/vh to absolute/%; updated body to centered flexbox with dark background |
+| `js/static_intro.js` | Changed renderer target, camera aspect, resize handler, and overlay sizing from window to `screenContainer` |
+| `js/variables.js` | Added `screenContainer` global; initialized in `initVariables()` |
+| `js/tv-controls.js` | New file: `togglePower()`, `triggerDegauss()`, button click handlers |
 
 ### Reserved: Addendum C — [TBD]
 

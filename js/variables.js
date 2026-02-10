@@ -1,11 +1,12 @@
 var video
 var overlay;
 var overlayCC;
+var screenContainer = null;
 
 var foundFace = false;
-var faceDistance = 1.1; // Start at faceLow for maximum shader effects
-var faceLow = 1.1;
-var faceHigh = 1.5;
+var faceDistance = 1.0; // Start at faceLow for maximum shader effects
+var faceLow = 1.0;
+var faceHigh = 1.3;
 var faceDetectionIsCurrent = false;
 var faceTimestamp;
 
@@ -56,6 +57,8 @@ var SUPABASE_URL = '%%SUPABASE_URL%%';  // Injected at build time by Netlify
 var SUPABASE_PUBLISHABLE_KEY = '%%SUPABASE_PUBLISHABLE_KEY%%';  // Injected at build time (read-only publishable key)
 
 function initVariables() {
+  // Screen container for TV frame
+	screenContainer = document.getElementById('screen-content');
   // Face contour overlay
 	overlay = document.getElementById('overlay');
 	overlayCC = overlay.getContext('2d');

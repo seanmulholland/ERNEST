@@ -10,7 +10,12 @@
 
 </head>
 
-<body>
+<body class="power-on">
+
+	<div class="pvm-container" id="pvm">
+		<div class="bezel">
+			<div class="screen-wrapper">
+				<div class="screen-content flicker" id="screen-content">
 
 	<!-- CLM Tracker Container -->
     <div id="overlay-wrapper">
@@ -79,22 +84,22 @@
 		</div>
 
 		<div class="infoBox">
-		
+
 			<div id="graphBox"></div>
 
 				<p class="pre">
 ███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
 ██╔════╝██╔══██╗████╗  ██║██╔════╝██╔════╝╚══██╔══╝
-█████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║   
-██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║   
-███████╗██║  ██║██║ ╚████║███████╗███████║   ██║   
-╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝   
+█████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║
+██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║
+███████╗██║  ██║██║ ╚████║███████╗███████║   ██║
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝
 				</p>
 			<p class="imgText">
 
 
 
-				We have been reading your expressions between content tests and find you to have a <span id="averageEmotion" class="caps">happy</span> baseline expression! 
+				We have been reading your expressions between content tests and find you to have a <span id="averageEmotion" class="caps">happy</span> baseline expression!
 				<br /><br />
 <!-- 				<span id="reportResult">Looks like my work here is done!</span>
 				<br /><br /> -->
@@ -139,10 +144,10 @@
 			<p class="pre">
 ███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
 ██╔════╝██╔══██╗████╗  ██║██╔════╝██╔════╝╚══██╔══╝
-█████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║   
-██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║   
-███████╗██║  ██║██║ ╚████║███████╗███████║   ██║   
-╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝   
+█████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║
+██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║
+███████╗██║  ██║██║ ╚████║███████╗███████║   ██║
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝
 			</p>
 			<p>
 				When building Ernest we were asked who gets to decide if you should be happy? What if someone else's version of happy doesn't match yours? What if bad actors train the machine's model to think disturbing content is happy?
@@ -161,6 +166,39 @@
 		<div>[?] About</div>
 		<div>[D] Dashboard</div>
 	</div>
+
+				</div><!-- /.screen-content -->
+				<div class="crt-overlay"></div>
+				<div class="scan-line"></div>
+			</div><!-- /.screen-wrapper -->
+		</div><!-- /.bezel -->
+
+		<div class="controls">
+			<div class="branding">
+				<span>ERNEST</span>
+				<span class="model-num">Sony PVM-9L2</span>
+			</div>
+			<div class="buttons">
+				<div class="button-group">
+					<div class="round-btn" id="btn-menu"></div>
+					<span>MENU</span>
+				</div>
+				<div class="button-group">
+					<div class="round-btn" id="btn-about"></div>
+					<span>ABOUT</span>
+				</div>
+				<div class="button-group">
+					<div class="round-btn" id="btn-degauss"></div>
+					<span>DEGAUSS</span>
+				</div>
+				<div class="button-group">
+					<div class="power-led"></div>
+					<div class="round-btn power-btn" id="btn-power"></div>
+					<span>POWER</span>
+				</div>
+			</div>
+		</div>
+	</div><!-- /.pvm-container -->
 
 
 
@@ -200,6 +238,7 @@
 	<script src="js/typing.js"></script>
 	<script src="js/analytics.js"></script>
 	<script src="js/dashboard.js"></script>
+	<script src="js/tv-controls.js"></script>
 	<script src="js/composer.js"></script>
 
 	<script src="js/vendors/d3.min.js"></script>
