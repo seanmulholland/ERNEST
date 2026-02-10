@@ -22,6 +22,7 @@ function initKeyListener () {
 						submitReaction();
 					} else if (currentQuestion == 6) { // If no means reset than include in this conditional
 						currentQuestion = 2;
+						resetQ3Emotions();
 						selectContent();
 					}
 				moveToNextStep();
@@ -133,7 +134,22 @@ function gifTown() {
 // First time machine analyzes human emotion and displays to user
 // Question moves into emotionJudge and the user will have to input y/n
 function emotionScore() {
-	maxEmotionVal = Math.round(maxEmotion.value * 100); // convert emotion value into a percentage
+	var total = q3FrameCount || 1;
+	var bestEmotion = 'unsure';
+	var bestValue = 0;
+
+	for (var key in q3Emotions) {
+		var avg = q3Emotions[key] / total;
+		if (avg > bestValue) {
+			bestValue = avg;
+			bestEmotion = key;
+		}
+	}
+
+	var displayName = mapEmotionName(bestEmotion);
+	maxEmotion = { emotion: displayName, value: bestValue };
+	maxEmotionVal = Math.round(bestValue * 100);
+
 	var calculatedEmotion = "> I am " + maxEmotionVal + "% confident that made you " + maxEmotion.emotion + ". Does that sound right?";
 	typeSentence(calculatedEmotion, 0, yesOrNo);
 }

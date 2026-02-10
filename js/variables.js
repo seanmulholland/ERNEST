@@ -1,11 +1,12 @@
 var video
 var overlay;
 var overlayCC;
+var screenContainer = null;
 
 var foundFace = false;
-var faceDistance = 1.1; // Start at faceLow for maximum shader effects
-var faceLow = 1.1;
-var faceHigh = 1.5;
+var faceDistance = 1.0; // Start at faceLow for maximum shader effects
+var faceLow = 1.0;
+var faceHigh = 1.3;
 var faceDetectionIsCurrent = false;
 var faceTimestamp;
 
@@ -24,6 +25,10 @@ var emotions = {
 	happy: 0
 };
 var totalEmotionsRead = 0;
+
+// Q3-specific emotion accumulators (reset between rounds, used for confidence scoring)
+var q3Emotions = { anger: 0, disgust: 0, fear: 0, sad: 0, surprise: 0, happy: 0 };
+var q3FrameCount = 0;
 
 var smileTimeout;
 
@@ -52,6 +57,8 @@ var SUPABASE_URL = '%%SUPABASE_URL%%';  // Injected at build time by Netlify
 var SUPABASE_PUBLISHABLE_KEY = '%%SUPABASE_PUBLISHABLE_KEY%%';  // Injected at build time (read-only publishable key)
 
 function initVariables() {
+  // Screen container for TV frame
+	screenContainer = document.getElementById('screen-content');
   // Face contour overlay
 	overlay = document.getElementById('overlay');
 	overlayCC = overlay.getContext('2d');
@@ -72,6 +79,17 @@ function activateStaticCanvas() {
 			$(this).fadeIn(3000);
 		}
 	})
+}
+
+function resetQ3Emotions() {
+	q3Emotions = { anger: 0, disgust: 0, fear: 0, sad: 0, surprise: 0, happy: 0 };
+	q3FrameCount = 0;
+}
+
+// Map internal emotion key names to display names used in UI and database
+function mapEmotionName(key) {
+	var nameMap = { anger: 'angry', disgust: 'disgusted', fear: 'fearful', sad: 'sad', surprise: 'surprised', happy: 'happy' };
+	return nameMap[key] || key;
 }
 
 // Reset all flags here
@@ -100,6 +118,7 @@ function resetAlize() {
 		happy: 0
 	};
 	totalEmotionsRead = 0;
+	resetQ3Emotions();
 	$('#text-container').empty();
 	$('#text-container').css({
 		top: 0
@@ -177,6 +196,8 @@ document.onkeydown = function(evt) {
             filterDashboard('fearful');
         } else if (evt.key == '6') {
             filterDashboard('surprised');
+        } else if (evt.key == 'w' || evt.key == 'W') {
+            cycleDashboardDataMode();
         }
     }
 };
@@ -285,17 +306,18 @@ function submitReaction() {
     sessionStorage.setItem('ernest_session_id', sessionId);
   }
 
-  var total = totalEmotionsRead || 1;
+  var total = q3FrameCount || 1;
   var reactionData = {
     content_id: currentContentId,
     session_id: sessionId,
-    happy: emotions.happy / total,
-    sad: emotions.sad / total,
-    angry: emotions.anger / total,
-    disgusted: emotions.disgust / total,
-    fearful: emotions.fear / total,
-    surprised: emotions.surprise / total,
-    dominant_emotion: maxEmotion.emotion
+    happy: q3Emotions.happy / total,
+    sad: q3Emotions.sad / total,
+    angry: q3Emotions.anger / total,
+    disgusted: q3Emotions.disgust / total,
+    fearful: q3Emotions.fear / total,
+    surprised: q3Emotions.surprise / total,
+    dominant_emotion: maxEmotion.emotion,
+    user_confirmed: guessCorrect
   };
 
   var edgeFunctionUrl = SUPABASE_URL + '/functions/v1/submit-reaction';

@@ -14,7 +14,7 @@ var faceRecognized = 0;
 
 function initStatic() {
 
-	camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 20, 3000);
+	camera = new THREE.PerspectiveCamera(55, screenContainer.clientWidth / screenContainer.clientHeight, 20, 3000);
 	camera.position.z = 1000;
 	scene = new THREE.Scene();
 
@@ -39,12 +39,12 @@ function initStatic() {
 
 	//init renderer
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	renderer.domElement.style.position = 'fixed';
+	renderer.setSize( screenContainer.clientWidth, screenContainer.clientHeight );
+	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.top = '0';
 	renderer.domElement.style.left = '0';
 	renderer.domElement.style.zIndex = '1';
-	document.body.appendChild( renderer.domElement );
+	screenContainer.appendChild( renderer.domElement );
 	console.log('Renderer initialized and added to DOM');
 
 	//POST PROCESSING
@@ -181,8 +181,8 @@ function resetFaceRecog() {
 }
 
 function onResize() {
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	camera.aspect = window.innerWidth / window.innerHeight;
+	renderer.setSize(screenContainer.clientWidth, screenContainer.clientHeight);
+	camera.aspect = screenContainer.clientWidth / screenContainer.clientHeight;
 	camera.updateProjectionMatrix();
 	// Update overlay size to match video display area
 	updateOverlaySize();
@@ -204,26 +204,28 @@ function updateOverlaySize() {
 	// Calculate the actual screen size of the plane based on camera FOV
 	// With FOV 55 and distance 1000, we can estimate the visible size
 	// But simpler: match the plane's scaled dimensions proportionally to viewport
-	var viewportAspect = window.innerWidth / window.innerHeight;
-	
+	var containerWidth = screenContainer.clientWidth;
+	var containerHeight = screenContainer.clientHeight;
+	var viewportAspect = containerWidth / containerHeight;
+
 	var overlayWidth, overlayHeight;
-	
+
 	// Try to match the plane's visual size on screen
 	// Since camera is at z=1000 and plane is at z=0, the plane appears at 1:1 scale roughly
-	// So 1160x870 should be close to actual pixels, but we need to fit to viewport
+	// So 1160x870 should be close to actual pixels, but we need to fit to container
 	if (viewportAspect > planeAspect) {
-		// Viewport is wider - fit to height
+		// Container is wider - fit to height
 		overlayHeight = scaledHeight;
 		overlayWidth = overlayHeight * planeAspect;
 	} else {
-		// Viewport is taller - fit to width
+		// Container is taller - fit to width
 		overlayWidth = scaledWidth;
 		overlayHeight = overlayWidth / planeAspect;
 	}
-	
-	// Scale to fit viewport if needed (max 90% of viewport)
-	var maxWidth = window.innerWidth * 0.9;
-	var maxHeight = window.innerHeight * 0.9;
+
+	// Scale to fit container if needed (max 90% of container)
+	var maxWidth = containerWidth * 0.9;
+	var maxHeight = containerHeight * 0.9;
 	if (overlayWidth > maxWidth) {
 		overlayWidth = maxWidth;
 		overlayHeight = overlayWidth / planeAspect;
