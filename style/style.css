@@ -716,3 +716,59 @@ canvas {
 	width: clamp(27px, 5.25vw, 42px);
 	height: clamp(27px, 5.25vw, 42px);
 }
+
+/* ===== TOUCH-DEVICE DASHBOARD — single column, touch-scrollable ===== */
+
+.touch-device .dashboard-grid {
+	grid-template-columns: 1fr;
+}
+
+.touch-device #dashboardList {
+	-webkit-overflow-scrolling: touch;
+	overflow-y: auto;
+}
+
+/* ===== TOUCH-DEVICE POPUP TEXT — 75% size ===== */
+
+.touch-device .hoverWindow {
+	font-size: 22px;
+}
+
+.touch-device .windowbar {
+	height: 26px;
+	padding-top: 4px;
+}
+
+.touch-device .windowbar div {
+	width: 30px;
+	height: 26px;
+}
+
+.touch-device .infoBox .imgText,
+.touch-device .infoBox p {
+	font-size: 22px;
+}
+
+.touch-device .pre {
+	font-size: 13px;
+}
+
+.touch-device #dashboardFilters {
+	font-size: 22px;
+}
+
+.touch-device .dashboard-card-name {
+	font-size: 22px;
+}
+
+.touch-device .emotion-bar-container {
+	font-size: 22px;
+}
+
+.touch-device .emotion-bar-value {
+	font-size: 22px;
+}
+
+.touch-device #dashboardControls {
+	font-size: 22px;
+}
