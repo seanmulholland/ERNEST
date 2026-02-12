@@ -131,6 +131,7 @@ function resetAlize() {
 	if (typeof dashboardState !== 'undefined') dashboardState.visible = false;
 	// $( '#about' ).hide();
 	$( '#facebox' ).show();
+	$('#touch-keys').removeClass('yn-active');
 	selectContent();
 	activateStaticCanvas();
 }
