@@ -1,6 +1,6 @@
 var dashboardState = {
   visible: false,
-  filter: 'all',
+  filter: 'happy',
   dataMode: 'weighted',
   scrollIndex: 0,
   rankings: [],
@@ -8,8 +8,8 @@ var dashboardState = {
 };
 
 var DASHBOARD_PAGE_SIZE = 6;
-var EMOTION_FILTERS = ['all', 'happy', 'sad', 'angry', 'disgusted', 'fearful', 'surprised'];
-var DATA_MODES = ['all', 'weighted', 'confirmed'];
+var EMOTION_FILTERS = ['happy', 'sad', 'angry', 'disgust', 'fear', 'surprise'];
+var DATA_MODES = ['weighted', 'confirmed'];
 
 function toggleDashboard() {
   dashboardState.visible = !dashboardState.visible;
@@ -31,13 +31,15 @@ function toggleDashboard() {
 }
 
 function renderDashboardFilters() {
-  var html = '<span class="dashboard-mode">[W] ' + dashboardState.dataMode.toUpperCase() + '</span> ';
+  var html = '';
   EMOTION_FILTERS.forEach(function(f, i) {
     var activeClass = (f === dashboardState.filter) ? ' active' : '';
-    var label = '[' + (i === 0 ? '0' : i) + '] ' + f.toUpperCase();
+    var label = '[' + (i + 1) + '] ' + f.toUpperCase();
     html += '<span class="dashboard-filter' + activeClass + '" data-filter="' + f + '">' + label + '</span> ';
   });
   document.getElementById('dashboardFilters').innerHTML = html;
+  var modeLabel = document.getElementById('dashboardModeLabel');
+  if (modeLabel) modeLabel.textContent = '[W] ' + dashboardState.dataMode.toUpperCase();
 }
 
 function filterDashboard(emotion) {
@@ -92,16 +94,10 @@ function fetchRankingsForMode() {
 function sortAndRenderDashboard() {
   var rankings = dashboardState.rankings.slice();
 
-  if (dashboardState.filter !== 'all') {
-    var key = 'avg_' + dashboardState.filter;
-    rankings.sort(function(a, b) {
-      return (b[key] || 0) - (a[key] || 0);
-    });
-  } else {
-    rankings.sort(function(a, b) {
-      return (b.total_reactions || 0) - (a.total_reactions || 0);
-    });
-  }
+  var key = 'avg_' + dashboardState.filter;
+  rankings.sort(function(a, b) {
+    return (b[key] || 0) - (a[key] || 0);
+  });
 
   dashboardState.rankings = rankings;
   renderDashboardList();
@@ -117,7 +113,7 @@ function renderDashboardList() {
   }
 
   var start = 0;
-  var end = rankings.length;
+  var end = Math.min(rankings.length, 6);
   var html = '<div class="dashboard-grid">';
 
   for (var i = start; i < end; i++) {

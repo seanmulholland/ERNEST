@@ -53,8 +53,8 @@ var sessionShownContent = [];
 
 // Supabase client (reads only — writes go through Edge Function)
 var supabaseClient = null;
-var SUPABASE_URL = '%%SUPABASE_URL%%';  // Injected at build time by Netlify
-var SUPABASE_PUBLISHABLE_KEY = '%%SUPABASE_PUBLISHABLE_KEY%%';  // Injected at build time (read-only publishable key)
+var SUPABASE_URL = 'https://shqngfwbmihqkklsffgb.supabase.co';  // Injected at build time by Netlify
+var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zjOS1LyWyhbxLme8hyW2Ig_smSBdm7o';  // Injected at build time (read-only publishable key)
 
 function initVariables() {
   // Screen container for TV frame
@@ -185,8 +185,6 @@ document.onkeydown = function(evt) {
         } else if (evt.key == 'ArrowDown') {
             evt.preventDefault();
             scrollDashboard(1);
-        } else if (evt.key == '0') {
-            filterDashboard('all');
         } else if (evt.key == '1') {
             filterDashboard('happy');
         } else if (evt.key == '2') {
