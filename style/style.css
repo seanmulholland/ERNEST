@@ -43,14 +43,14 @@ canvas {
 
 .terminal-text {
 	color: #33ff33;
-	font-size: 5.6cqw;
+	font-size: var(--tv-text-lg);
 	width: 90%;
 	margin: 0 5%;
 	position: relative;
 }
 
 .block {
-	font-size: 4.2cqw;
+	font-size: var(--tv-text-base);
 }
 
 /*** Mirror video ***/
@@ -88,8 +88,8 @@ canvas {
 	top: 0; left: 0; bottom: 0; right: 0;
 	height: 75%;
 	width: 75%;
-	border: 0.4cqw ridge;
-    font-size: 4.1cqw;
+	border: var(--tv-border) ridge;
+    font-size: var(--tv-text-base);
     text-align: center;
 	z-index: 15;
 }
@@ -113,7 +113,7 @@ canvas {
 }
 
 .windowbar {
-	border-bottom: 0.4cqw solid;
+	border-bottom: var(--tv-border) solid;
 	height: 5cqh;
     padding-top: 0.7cqh;
 	padding-left: 2.8cqw;
@@ -124,7 +124,7 @@ canvas {
 .windowbar div {
     float: right;
     padding-top: 1cqh;
-    border-left: 0.4cqw solid;
+    border-left: var(--tv-border) solid;
     text-align: center;
     width: 5.6cqw;
     height: 5cqh;
@@ -191,7 +191,7 @@ canvas {
     right: 0;
     bottom: -19px;
     margin: auto;
-    font-size: 2.4cqw;
+    font-size: var(--tv-text-xs);
     line-height: 1.25em;
     background-color: #5daf2a;
 }
@@ -209,7 +209,7 @@ canvas {
 	position: absolute;
 	right: 7%;
 	bottom: 5%;
-	font-size: 5.6cqw;
+	font-size: var(--tv-text-lg);
 	color: #33ff33;
 	z-index: 5;
 }
@@ -218,21 +218,21 @@ canvas {
 	position: absolute;
 	height: 67%;
 	width: 67%;
-	border: 0.7cqw solid rgb(51,255,51,0.75);
+	border: var(--tv-border) solid rgb(51,255,51,0.75);
 	margin: auto;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	text-align: center;
-	font-size: 8cqw;
+	font-size: var(--tv-text-xl);
 	color: #33ff33;
 	z-index: 10;
 }
 
 .pre {
 	white-space: pre;
-	font-size: 2.4cqw;
+	font-size: var(--tv-text-xs);
 	font-family: Courier, monospace;
 	line-height: 1.19;
 }
@@ -258,7 +258,7 @@ canvas {
 
 #dashboardFilters {
 	padding: 10px 0;
-	font-size: 4.1cqw;
+	font-size: var(--tv-text-base);
 }
 
 .dashboard-mode {
@@ -327,7 +327,7 @@ canvas {
 	left: 4px;
 	background: rgba(53, 117, 66, 0.85);
 	padding: 2px 6px;
-	font-size: 2.5cqw;
+	font-size: var(--tv-text-sm);
 }
 
 .dashboard-card-info {
@@ -336,7 +336,7 @@ canvas {
 }
 
 .dashboard-card-name {
-	font-size: 4.1cqw;
+	font-size: var(--tv-text-base);
 	margin-bottom: 4px;
 	text-transform: uppercase;
 	white-space: nowrap;
@@ -348,7 +348,7 @@ canvas {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	font-size: 4.1cqw;
+	font-size: var(--tv-text-base);
 	margin: 2px 0;
 }
 
@@ -375,12 +375,12 @@ canvas {
 }
 
 .emotion-bar-value {
-	font-size: 4.1cqw;
+	font-size: var(--tv-text-base);
 	width: 55px;
 }
 
 .dashboard-card-count {
-	font-size: 4.1cqw;
+	font-size: var(--tv-text-base);
 	margin-top: 4px;
 	opacity: 0.7;
 }
@@ -439,6 +439,14 @@ canvas {
 	overflow: hidden;
 	background: #000;
 	container-type: size;
+
+	/* ---- TV text scale (tweak these to resize all screen content) ---- */
+	--tv-text-xs: 1.7cqw;   /* pre/ASCII art, graph labels          */
+	--tv-text-sm: 1.8cqw;   /* card rank badges                      */
+	--tv-text-base: 2.9cqw; /* popup body, dashboard, windowbar      */
+	--tv-text-lg: 3.9cqw;   /* terminal text, bug overlay             */
+	--tv-text-xl: 5.6cqw;   /* facebox "PLEASE COME CLOSER" prompt   */
+	--tv-border: 0.4cqw;    /* popup & windowbar border width         */
 }
 
 .crt-overlay {
@@ -735,57 +743,25 @@ canvas {
 	overflow-y: auto;
 }
 
-/* ===== TOUCH-DEVICE POPUP TEXT — scaled down for mobile ===== */
+/* ===== TOUCH-DEVICE — override TV text scale + popup layout ===== */
+
+.touch-device .screen-content {
+	--tv-text-xs: 1.1cqw;
+	--tv-text-sm: 1.1cqw;
+	--tv-text-base: 1.8cqw;
+	--tv-text-lg: 2.4cqw;
+	--tv-text-xl: 3.5cqw;
+	--tv-border: 0.25cqw;
+}
 
 .touch-device .hoverWindow {
-	font-size: 2.5cqw;
 	width: 85%;
 	height: 85%;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
 }
 
-.touch-device .windowbar {
-	height: 3.1cqh;
-	padding-top: 0.4cqh;
-	font-size: 2.25cqw;
-}
-
-.touch-device .windowbar div {
-	width: 3.7cqw;
-	height: 3.1cqh;
-}
-
 .touch-device .infoBox {
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
-}
-
-.touch-device .infoBox .imgText,
-.touch-device .infoBox p {
-	font-size: 2.5cqw;
-}
-
-.touch-device .pre {
-	font-size: 1.4cqw;
-}
-
-.touch-device #dashboardFilters {
-	font-size: 2.5cqw;
-}
-
-.touch-device .dashboard-card-name {
-	font-size: 2.5cqw;
-}
-
-.touch-device .emotion-bar-container {
-	font-size: 2.5cqw;
-}
-
-.touch-device .emotion-bar-value {
-	font-size: 2.5cqw;
-}
-
-.touch-device #dashboardControls {
-	font-size: 2.5cqw;
 }
