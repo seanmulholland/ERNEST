@@ -598,15 +598,14 @@ canvas {
 #touch-keys {
 	display: none;
 	position: fixed;
-	bottom: 10px;
+	bottom: 15vh;
 	left: 0;
 	right: 0;
 	z-index: 100;
 	flex-direction: row;
 	justify-content: center;
-	align-items: center;
-	gap: 8px;
-	padding: 0 8px;
+	align-items: flex-start;
+	gap: 30px;
 }
 
 /* Show on touch devices */
@@ -614,29 +613,46 @@ canvas {
 	display: flex;
 }
 
-/* Mechanical keycap — sized to fit 7 keys in one row */
+/* Each group is a vertical stack of rows */
+.touch-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+}
+
+/* Each row is a horizontal flex container */
+.touch-row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 18px;
+}
+
+/* Mechanical keycap — matches previous checkpoint sizing */
 .keycap {
 	pointer-events: auto;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 52px;
-	min-height: 52px;
-	width: clamp(44px, 11vw, 64px);
-	height: clamp(44px, 11vw, 64px);
+	min-width: 78px;
+	min-height: 78px;
+	width: clamp(72px, 15vw, 96px);
+	height: clamp(72px, 15vw, 96px);
 	background:
 		linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 40%, #2e2e2e 100%);
-	border-radius: 8px;
+	border-radius: 10px;
 	border: 1px solid #222;
 	box-shadow:
 		0 1px 0 1px #1a1a1a,
-		0 2px 0 1px #151515,
-		0 3px 0 1px #111,
-		0 4px 8px rgba(0, 0, 0, 0.5),
+		0 3px 0 1px #151515,
+		0 5px 0 1px #111,
+		0 7px 0 1px #0a0a0a,
+		0 9px 12px rgba(0, 0, 0, 0.6),
 		inset 0 1px 1px rgba(255, 255, 255, 0.15);
 	color: #e8e8e8;
 	font-family: 'VT323', 'Courier New', monospace;
-	font-size: clamp(22px, 5.5vw, 32px);
+	font-size: clamp(33px, 7.5vw, 45px);
 	font-weight: bold;
 	letter-spacing: 1px;
 	cursor: pointer;
@@ -648,17 +664,15 @@ canvas {
 	text-shadow: 0 0 4px rgba(51, 255, 51, 0.4);
 }
 
-/* Smaller variant for utility keys */
-.keycap-sm {
-	min-width: 40px;
-	min-height: 52px;
-	width: clamp(36px, 9vw, 52px);
-	font-size: clamp(18px, 4.5vw, 26px);
+/* Wide variant for ESC key spanning two-key width */
+.keycap-wide {
+	min-width: 174px;
+	width: clamp(162px, 31vw, 210px);
 }
 
 /* Pressed state */
 .keycap:active {
-	transform: translateY(3px);
+	transform: translateY(4px);
 	background:
 		linear-gradient(180deg, #3a3a3a 0%, #333 40%, #2a2a2a 100%);
 	box-shadow:
