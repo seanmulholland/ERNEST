@@ -697,29 +697,29 @@ canvas {
 	}
 }
 
-/* ===== TOUCH-DEVICE TV CONTROLS — 50% larger ===== */
+/* ===== TOUCH-DEVICE TV CONTROLS — 87.5% larger (prev 50% + 25%) ===== */
 
 .touch-device .controls {
-	height: clamp(60px, 15vh, 120px);
-	font-size: clamp(0.6rem, 1.5vw, 1.05rem);
+	height: clamp(75px, 19vh, 150px);
+	font-size: clamp(0.75rem, 1.9vw, 1.3rem);
 }
 
 .touch-device .branding span {
-	font-size: clamp(0.9rem, 2.25vw, 1.65rem);
+	font-size: clamp(1.125rem, 2.8vw, 2rem);
 }
 
 .touch-device .model-num {
-	font-size: 0.825rem;
+	font-size: 1.03rem;
 }
 
 .touch-device .round-btn {
-	width: clamp(18px, 3.75vw, 30px);
-	height: clamp(18px, 3.75vw, 30px);
+	width: clamp(22px, 4.7vw, 38px);
+	height: clamp(22px, 4.7vw, 38px);
 }
 
 .touch-device .power-btn {
-	width: clamp(27px, 5.25vw, 42px);
-	height: clamp(27px, 5.25vw, 42px);
+	width: clamp(34px, 6.6vw, 52px);
+	height: clamp(34px, 6.6vw, 52px);
 }
 
 /* ===== TOUCH-DEVICE DASHBOARD — single column, touch-scrollable ===== */

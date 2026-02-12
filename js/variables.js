@@ -147,8 +147,10 @@ document.onkeydown = function(evt) {
         isEscape = (evt.keyCode == 27);
     }
     if (isEscape) {
-        // Close dashboard first if open, otherwise reset
-        if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
+        // Dismiss popups in layer order, then reset
+        if ($('#about').is(':visible')) {
+            $('#about').hide();
+        } else if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
             toggleDashboard();
         } else {
             resetAlize();

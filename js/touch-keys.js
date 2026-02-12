@@ -7,9 +7,11 @@ $(function() {
 		document.body.classList.add('touch-device');
 	}
 
-	// ESC key — close dashboard or reset experience
+	// ESC key — dismiss popups in layer order, then reset
 	$('#key-esc').on('click', function() {
-		if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
+		if ($('#about').is(':visible')) {
+			$('#about').hide();
+		} else if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
 			toggleDashboard();
 		} else {
 			resetAlize();
