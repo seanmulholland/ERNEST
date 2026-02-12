@@ -598,14 +598,15 @@ canvas {
 #touch-keys {
 	display: none;
 	position: fixed;
-	bottom: 15vh;
+	bottom: 10px;
 	left: 0;
 	right: 0;
 	z-index: 100;
-	flex-direction: column;
+	flex-direction: row;
+	justify-content: center;
 	align-items: center;
-	gap: 14px;
-	pointer-events: none;
+	gap: 8px;
+	padding: 0 8px;
 }
 
 /* Show on touch devices */
@@ -613,47 +614,29 @@ canvas {
 	display: flex;
 }
 
-/* Each row is a horizontal flex container */
-.touch-row {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 18px;
-}
-
-/* Y/N row hidden until a Y/N prompt is active */
-#touch-row-yn {
-	display: none;
-}
-
-#touch-keys.yn-active #touch-row-yn {
-	display: flex;
-}
-
-/* Mechanical keycap — 50% larger for mobile */
+/* Mechanical keycap — sized to fit 7 keys in one row */
 .keycap {
 	pointer-events: auto;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 78px;
-	min-height: 78px;
-	width: clamp(72px, 15vw, 96px);
-	height: clamp(72px, 15vw, 96px);
+	min-width: 52px;
+	min-height: 52px;
+	width: clamp(44px, 11vw, 64px);
+	height: clamp(44px, 11vw, 64px);
 	background:
 		linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 40%, #2e2e2e 100%);
-	border-radius: 10px;
+	border-radius: 8px;
 	border: 1px solid #222;
 	box-shadow:
 		0 1px 0 1px #1a1a1a,
-		0 3px 0 1px #151515,
-		0 5px 0 1px #111,
-		0 7px 0 1px #0a0a0a,
-		0 9px 12px rgba(0, 0, 0, 0.6),
+		0 2px 0 1px #151515,
+		0 3px 0 1px #111,
+		0 4px 8px rgba(0, 0, 0, 0.5),
 		inset 0 1px 1px rgba(255, 255, 255, 0.15);
 	color: #e8e8e8;
 	font-family: 'VT323', 'Courier New', monospace;
-	font-size: clamp(33px, 7.5vw, 45px);
+	font-size: clamp(22px, 5.5vw, 32px);
 	font-weight: bold;
 	letter-spacing: 1px;
 	cursor: pointer;
@@ -665,9 +648,17 @@ canvas {
 	text-shadow: 0 0 4px rgba(51, 255, 51, 0.4);
 }
 
+/* Smaller variant for utility keys */
+.keycap-sm {
+	min-width: 40px;
+	min-height: 52px;
+	width: clamp(36px, 9vw, 52px);
+	font-size: clamp(18px, 4.5vw, 26px);
+}
+
 /* Pressed state */
 .keycap:active {
-	transform: translateY(4px);
+	transform: translateY(3px);
 	background:
 		linear-gradient(180deg, #3a3a3a 0%, #333 40%, #2a2a2a 100%);
 	box-shadow:
@@ -677,7 +668,7 @@ canvas {
 		inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Glow on Y/N keys to draw attention */
+/* Glow on Y/N keys when listening for answer */
 #touch-keys.yn-active #key-y,
 #touch-keys.yn-active #key-n {
 	color: #33ff33;
@@ -731,44 +722,54 @@ canvas {
 /* ===== TOUCH-DEVICE POPUP TEXT — 75% size ===== */
 
 .touch-device .hoverWindow {
-	font-size: 22px;
+	font-size: 18px;
+	width: 85%;
+	height: 85%;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 .touch-device .windowbar {
-	height: 26px;
-	padding-top: 4px;
+	height: 22px;
+	padding-top: 3px;
+	font-size: 16px;
 }
 
 .touch-device .windowbar div {
-	width: 30px;
-	height: 26px;
+	width: 26px;
+	height: 22px;
+}
+
+.touch-device .infoBox {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 .touch-device .infoBox .imgText,
 .touch-device .infoBox p {
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .touch-device .pre {
-	font-size: 13px;
+	font-size: 10px;
 }
 
 .touch-device #dashboardFilters {
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .touch-device .dashboard-card-name {
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .touch-device .emotion-bar-container {
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .touch-device .emotion-bar-value {
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .touch-device #dashboardControls {
-	font-size: 22px;
+	font-size: 18px;
 }

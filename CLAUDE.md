@@ -63,6 +63,7 @@ No build system, package manager, or install step. Open `index.html` directly in
 ## Git Commit Rules
 
 - Do NOT add `Co-Authored-By` lines to commit messages
+- Do NOT add "Generated with Claude Code" or any AI attribution to commits, PR descriptions, or any other git artifacts
 - Always include related PRD or design docs (`docs/`) in commits alongside implementation changes
 
 ## Development Notes
