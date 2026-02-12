@@ -231,6 +231,7 @@ canvas {
 }
 
 .pre {
+	display: inline-block;
 	white-space: pre;
 	text-align: left;
 	font-size: var(--tv-text-xs);
