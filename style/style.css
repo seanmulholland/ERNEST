@@ -445,9 +445,9 @@ canvas {
 	/* ---- TV text scale (tweak these to resize all screen content) ---- */
 	--tv-text-xs: 1.7cqw;   /* pre/ASCII art, graph labels          */
 	--tv-text-sm: 1.8cqw;   /* card rank badges                      */
-	--tv-text-base: 2.9cqw; /* popup body, dashboard, windowbar      */
-	--tv-text-lg: 3.9cqw;   /* terminal text, bug overlay             */
-	--tv-text-xl: 5.6cqw;   /* facebox "PLEASE COME CLOSER" prompt   */
+	--tv-text-base: 2.5cqw; /* popup body, dashboard, windowbar      */
+	--tv-text-lg: 2.9cqw;   /* terminal text, bug overlay             */
+	--tv-text-xl: 4.6cqw;   /* facebox "PLEASE COME CLOSER" prompt   */
 	--tv-border: 0.4cqw;    /* popup & windowbar border width         */
 }
 
@@ -750,8 +750,8 @@ canvas {
 .touch-device .screen-content {
 	--tv-text-xs: 1.1cqw;
 	--tv-text-sm: 1.1cqw;
-	--tv-text-base: 1.8cqw;
-	--tv-text-lg: 2.4cqw;
+	--tv-text-base: 2.8cqw;
+	--tv-text-lg: 3.5cqw;
 	--tv-text-xl: 3.5cqw;
 	--tv-border: 0.25cqw;
 }
