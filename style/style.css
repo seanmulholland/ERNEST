@@ -14,6 +14,15 @@ body {
 	height: 100vh;
 }
 
+/* On touch devices, push TV toward top */
+.touch-device {
+	align-items: flex-start;
+}
+
+.touch-device .pvm-container {
+	margin-top: 15vh;
+}
+
 canvas {
 	position: absolute;
 	top: 0;
@@ -589,13 +598,13 @@ canvas {
 #touch-keys {
 	display: none;
 	position: fixed;
-	bottom: 12px;
+	bottom: 15vh;
 	left: 0;
 	right: 0;
 	z-index: 100;
-	justify-content: center;
+	flex-direction: column;
 	align-items: center;
-	gap: 12px;
+	gap: 14px;
 	pointer-events: none;
 }
 
@@ -604,41 +613,36 @@ canvas {
 	display: flex;
 }
 
-.keycap-spacer {
-	width: 16px;
+/* Each row is a horizontal flex container */
+.touch-row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 18px;
 }
 
-/* Y and N keys hidden until a Y/N prompt is active */
-#key-y,
-#key-n {
+/* Y/N row hidden until a Y/N prompt is active */
+#touch-row-yn {
 	display: none;
 }
 
-#touch-keys.yn-active #key-y,
-#touch-keys.yn-active #key-n {
+#touch-keys.yn-active #touch-row-yn {
 	display: flex;
 }
 
-/* Hide D and ? when Y/N prompt is active to reduce clutter */
-#touch-keys.yn-active #key-d,
-#touch-keys.yn-active #key-help,
-#touch-keys.yn-active .keycap-spacer {
-	display: none;
-}
-
-/* Mechanical keycap */
+/* Mechanical keycap — 50% larger for mobile */
 .keycap {
 	pointer-events: auto;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 52px;
-	min-height: 52px;
-	width: clamp(48px, 10vw, 64px);
-	height: clamp(48px, 10vw, 64px);
+	min-width: 78px;
+	min-height: 78px;
+	width: clamp(72px, 15vw, 96px);
+	height: clamp(72px, 15vw, 96px);
 	background:
 		linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 40%, #2e2e2e 100%);
-	border-radius: 7px;
+	border-radius: 10px;
 	border: 1px solid #222;
 	box-shadow:
 		0 1px 0 1px #1a1a1a,
@@ -649,7 +653,7 @@ canvas {
 		inset 0 1px 1px rgba(255, 255, 255, 0.15);
 	color: #e8e8e8;
 	font-family: 'VT323', 'Courier New', monospace;
-	font-size: clamp(22px, 5vw, 30px);
+	font-size: clamp(33px, 7.5vw, 45px);
 	font-weight: bold;
 	letter-spacing: 1px;
 	cursor: pointer;
@@ -686,4 +690,29 @@ canvas {
 	#touch-keys {
 		display: none !important;
 	}
+}
+
+/* ===== TOUCH-DEVICE TV CONTROLS — 50% larger ===== */
+
+.touch-device .controls {
+	height: clamp(60px, 15vh, 120px);
+	font-size: clamp(0.6rem, 1.5vw, 1.05rem);
+}
+
+.touch-device .branding span {
+	font-size: clamp(0.9rem, 2.25vw, 1.65rem);
+}
+
+.touch-device .model-num {
+	font-size: 0.825rem;
+}
+
+.touch-device .round-btn {
+	width: clamp(18px, 3.75vw, 30px);
+	height: clamp(18px, 3.75vw, 30px);
+}
+
+.touch-device .power-btn {
+	width: clamp(27px, 5.25vw, 42px);
+	height: clamp(27px, 5.25vw, 42px);
 }
