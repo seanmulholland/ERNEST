@@ -588,11 +588,11 @@ canvas {
 
 #touch-keys {
 	display: none;
-	position: absolute;
-	bottom: 4%;
+	position: fixed;
+	bottom: 12px;
 	left: 0;
 	right: 0;
-	z-index: 12;
+	z-index: 100;
 	justify-content: center;
 	align-items: center;
 	gap: 12px;
