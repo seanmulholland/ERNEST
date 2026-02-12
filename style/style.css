@@ -232,6 +232,7 @@ canvas {
 
 .pre {
 	white-space: pre;
+	text-align: left;
 	font-size: var(--tv-text-xs);
 	font-family: Courier, monospace;
 	line-height: 1.19;
