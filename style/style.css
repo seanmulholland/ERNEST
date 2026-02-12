@@ -43,14 +43,14 @@ canvas {
 
 .terminal-text {
 	color: #33ff33;
-	font-size: clamp(24px, 3.9vw, 40px);
+	font-size: 5.6cqw;
 	width: 90%;
 	margin: 0 5%;
 	position: relative;
 }
 
 .block {
-	font-size: clamp(18px, 2.9vw, 30px);
+	font-size: 4.2cqw;
 }
 
 /*** Mirror video ***/
@@ -88,8 +88,8 @@ canvas {
 	top: 0; left: 0; bottom: 0; right: 0;
 	height: 75%;
 	width: 75%;
-	border: 3px ridge;
-    font-size: clamp(17px, 2.83vw, 29px);
+	border: 0.4cqw ridge;
+    font-size: 4.1cqw;
     text-align: center;
 	z-index: 15;
 }
@@ -113,30 +113,31 @@ canvas {
 }
 
 .windowbar {
-	border-bottom: 3px solid;
-	height: 35px;
-    padding-top: 5px;
-	padding-left: 20px;
+	border-bottom: 0.4cqw solid;
+	height: 5cqh;
+    padding-top: 0.7cqh;
+	padding-left: 2.8cqw;
 	text-align: left;
 	text-transform: uppercase;
 }
 
 .windowbar div {
     float: right;
-    padding-top: 7px;
-    border-left: 3px solid;
+    padding-top: 1cqh;
+    border-left: 0.4cqw solid;
     text-align: center;
-    width: 40px;
-    height: 35px;
+    width: 5.6cqw;
+    height: 5cqh;
     position: relative;
-    top: -7px;
+    top: -1cqh;
 }
 
 .infoBox {
-	margin: 20px 0;
+	margin: 2.8cqh 0;
 	padding: 0 3%;
 	height: 85%;
 	position: relative;
+	overflow-y: auto;
 }
 
 #gif img, #analytics img {
@@ -190,7 +191,7 @@ canvas {
     right: 0;
     bottom: -19px;
     margin: auto;
-    font-size: clamp(10px, 1.66vw, 17px);
+    font-size: 2.4cqw;
     line-height: 1.25em;
     background-color: #5daf2a;
 }
@@ -208,7 +209,7 @@ canvas {
 	position: absolute;
 	right: 7%;
 	bottom: 5%;
-	font-size: clamp(24px, 3.9vw, 40px);
+	font-size: 5.6cqw;
 	color: #33ff33;
 	z-index: 5;
 }
@@ -217,21 +218,21 @@ canvas {
 	position: absolute;
 	height: 67%;
 	width: 67%;
-	border: 5px solid rgb(51,255,51,0.75);
+	border: 0.7cqw solid rgb(51,255,51,0.75);
 	margin: auto;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	text-align: center;
-	font-size: clamp(34px, 5.6vw, 57px);
+	font-size: 8cqw;
 	color: #33ff33;
 	z-index: 10;
 }
 
 .pre {
 	white-space: pre;
-	font-size: clamp(10px, 1.66vw, 17px);
+	font-size: 2.4cqw;
 	font-family: Courier, monospace;
 	line-height: 1.19;
 }
@@ -257,7 +258,7 @@ canvas {
 
 #dashboardFilters {
 	padding: 10px 0;
-	font-size: clamp(17px, 2.83vw, 29px);
+	font-size: 4.1cqw;
 }
 
 .dashboard-mode {
@@ -326,7 +327,7 @@ canvas {
 	left: 4px;
 	background: rgba(53, 117, 66, 0.85);
 	padding: 2px 6px;
-	font-size: clamp(11px, 1.76vw, 18px);
+	font-size: 2.5cqw;
 }
 
 .dashboard-card-info {
@@ -335,7 +336,7 @@ canvas {
 }
 
 .dashboard-card-name {
-	font-size: clamp(17px, 2.83vw, 29px);
+	font-size: 4.1cqw;
 	margin-bottom: 4px;
 	text-transform: uppercase;
 	white-space: nowrap;
@@ -347,7 +348,7 @@ canvas {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	font-size: clamp(17px, 2.83vw, 29px);
+	font-size: 4.1cqw;
 	margin: 2px 0;
 }
 
@@ -374,12 +375,12 @@ canvas {
 }
 
 .emotion-bar-value {
-	font-size: clamp(17px, 2.83vw, 29px);
+	font-size: 4.1cqw;
 	width: 55px;
 }
 
 .dashboard-card-count {
-	font-size: clamp(17px, 2.83vw, 29px);
+	font-size: 4.1cqw;
 	margin-top: 4px;
 	opacity: 0.7;
 }
@@ -437,6 +438,7 @@ canvas {
 	height: 100%;
 	overflow: hidden;
 	background: #000;
+	container-type: size;
 }
 
 .crt-overlay {
@@ -733,10 +735,10 @@ canvas {
 	overflow-y: auto;
 }
 
-/* ===== TOUCH-DEVICE POPUP TEXT — 75% size ===== */
+/* ===== TOUCH-DEVICE POPUP TEXT — scaled down for mobile ===== */
 
 .touch-device .hoverWindow {
-	font-size: 18px;
+	font-size: 2.5cqw;
 	width: 85%;
 	height: 85%;
 	overflow-y: auto;
@@ -744,14 +746,14 @@ canvas {
 }
 
 .touch-device .windowbar {
-	height: 22px;
-	padding-top: 3px;
-	font-size: 16px;
+	height: 3.1cqh;
+	padding-top: 0.4cqh;
+	font-size: 2.25cqw;
 }
 
 .touch-device .windowbar div {
-	width: 26px;
-	height: 22px;
+	width: 3.7cqw;
+	height: 3.1cqh;
 }
 
 .touch-device .infoBox {
@@ -761,29 +763,29 @@ canvas {
 
 .touch-device .infoBox .imgText,
 .touch-device .infoBox p {
-	font-size: 18px;
+	font-size: 2.5cqw;
 }
 
 .touch-device .pre {
-	font-size: 10px;
+	font-size: 1.4cqw;
 }
 
 .touch-device #dashboardFilters {
-	font-size: 18px;
+	font-size: 2.5cqw;
 }
 
 .touch-device .dashboard-card-name {
-	font-size: 18px;
+	font-size: 2.5cqw;
 }
 
 .touch-device .emotion-bar-container {
-	font-size: 18px;
+	font-size: 2.5cqw;
 }
 
 .touch-device .emotion-bar-value {
-	font-size: 18px;
+	font-size: 2.5cqw;
 }
 
 .touch-device #dashboardControls {
-	font-size: 18px;
+	font-size: 2.5cqw;
 }
