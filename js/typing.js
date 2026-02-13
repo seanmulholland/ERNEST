@@ -10,39 +10,51 @@ var textWrapper = $('#text-wrapper');
 
 var TIMETILLRESET = 15000; // Upon a period of requiring user input, this will determine how long we wait until the experience auto reset
 
+// Handle Y answer — called by keyboard listener and touch buttons
+function handleYes() {
+	if (!listeningForAnswer) return;
+	textContainer.append('y</p>');
+	if (currentQuestion == 4) {
+		guessCorrect = true;
+		guessUpdate();
+		submitReaction();
+	} else if (currentQuestion == 6) {
+		currentQuestion = 2;
+		resetQ3Emotions();
+		selectContent();
+	}
+	moveToNextStep();
+}
+
+// Handle N answer — called by keyboard listener and touch buttons
+function handleNo() {
+	if (!listeningForAnswer) return;
+	textContainer.append('n</p>');
+	if (currentQuestion == 1) {
+		resetAlize();
+	} else if (currentQuestion == 4) {
+		guessCorrect = false;
+		guessUpdate();
+		submitReaction();
+		moveToNextStep();
+	} else if (currentQuestion == 6) {
+		$( '#reportCard' ).show();
+		reportTimeout = setTimeout(function() {
+			resetAlize();
+		}, 15000);
+	} else {
+		moveToNextStep();
+	}
+}
+
 // Initilize one time listener to listen for y/n type if we need that to move chat flow foward
 function initKeyListener () {
 	$('body').keypress(function(event){
 		if (listeningForAnswer) {
 			if(event.key == 'y') {
-				textContainer.append('y</p>');
-					if (currentQuestion == 4) {
-						guessCorrect = true;
-						guessUpdate();
-						submitReaction();
-					} else if (currentQuestion == 6) { // If no means reset than include in this conditional
-						currentQuestion = 2;
-						resetQ3Emotions();
-						selectContent();
-					}
-				moveToNextStep();
+				handleYes();
 			} else if (event.key == 'n') {
-			textContainer.append('n</p>');
-				if (currentQuestion == 1) { // If no means reset than include in this conditional
-					resetAlize();
-				} else if ( currentQuestion == 4) {
-					guessCorrect = false;
-					guessUpdate();
-					submitReaction();
-					moveToNextStep();
-				} else if (currentQuestion == 6) {
-					$( '#reportCard' ).show();
-					reportTimeout = setTimeout(function() {
-						resetAlize();
-					}, 15000);
-				} else {
-					moveToNextStep();
-				}
+				handleNo();
 			}
 		}
 	})
@@ -209,6 +221,7 @@ function yesOrNo() {
 	displaySentence(yOrN);
 	animateBlock();
 	listeningForAnswer = true; // This will allow the type listener to notify us if y/n has been typed
+	$('#touch-keys').addClass('yn-active');
 	exitExperienceTimeout = setTimeout(resetAlize, TIMETILLRESET); // On periods of waiting if it is too long reset experience
 }
 
@@ -218,6 +231,7 @@ function moveToNextStep() {
 	$('.block').remove();
 	clearTimeout(exitExperienceTimeout);
 	listeningForAnswer = false;
+	$('#touch-keys').removeClass('yn-active');
 	nextStep = setTimeout(function() {
 		questionAnswered = true;
 	}, 1000);

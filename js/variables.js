@@ -131,6 +131,7 @@ function resetAlize() {
 	if (typeof dashboardState !== 'undefined') dashboardState.visible = false;
 	// $( '#about' ).hide();
 	$( '#facebox' ).show();
+	$('#touch-keys').removeClass('yn-active');
 	selectContent();
 	activateStaticCanvas();
 }
@@ -146,8 +147,10 @@ document.onkeydown = function(evt) {
         isEscape = (evt.keyCode == 27);
     }
     if (isEscape) {
-        // Close dashboard first if open, otherwise reset
-        if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
+        // Dismiss popups in layer order, then reset
+        if ($('#about').is(':visible')) {
+            $('#about').hide();
+        } else if (typeof dashboardState !== 'undefined' && dashboardState.visible) {
             toggleDashboard();
         } else {
             resetAlize();
@@ -182,8 +185,6 @@ document.onkeydown = function(evt) {
         } else if (evt.key == 'ArrowDown') {
             evt.preventDefault();
             scrollDashboard(1);
-        } else if (evt.key == '0') {
-            filterDashboard('all');
         } else if (evt.key == '1') {
             filterDashboard('happy');
         } else if (evt.key == '2') {

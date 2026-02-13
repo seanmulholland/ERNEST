@@ -3,6 +3,7 @@
 <head>
 	<title>Ernest Azile</title>
 	<meta charset='utf-8'>
+	<meta name="viewport" content="width=1024">
 	<link rel="icon" href="data:,">
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style/style.css">
@@ -87,14 +88,12 @@
 
 			<div id="graphBox"></div>
 
-				<p class="pre">
-███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
+				<p class="pre">███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
 ██╔════╝██╔══██╗████╗  ██║██╔════╝██╔════╝╚══██╔══╝
 █████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║
 ██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║
 ███████╗██║  ██║██║ ╚████║███████╗███████║   ██║
-╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝
-				</p>
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝</p>
 			<p class="imgText">
 
 
@@ -125,7 +124,7 @@
 			<div id="dashboardFilters" class="caps"></div>
 			<div id="dashboardList" style="flex:1; overflow-y:auto;"></div>
 			<div id="dashboardControls" class="caps" style="padding:10px 0; border-top:1px solid #fbe293;">
-				[&larr;/&rarr;] Filter &nbsp; [&uarr;/&darr;] Scroll &nbsp; [0-6] Jump to filter &nbsp; [W] Data mode &nbsp; [D/ESC] Close
+				[&larr;/&rarr;] Filter &nbsp; [&uarr;/&darr;] Scroll &nbsp; <span id="dashboardModeLabel">[W] Weighted</span> &nbsp; [D/ESC] Close
 			</div>
 		</div>
 	</div>
@@ -141,14 +140,12 @@
 
 		<div class="infoBox">
 
-			<p class="pre">
-███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
+			<p class="pre">███████╗██████╗ ███╗   ██╗███████╗███████╗████████╗
 ██╔════╝██╔══██╗████╗  ██║██╔════╝██╔════╝╚══██╔══╝
 █████╗  ██████╔╝██╔██╗ ██║█████╗  ███████╗   ██║
 ██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ╚════██║   ██║
 ███████╗██║  ██║██║ ╚████║███████╗███████║   ██║
-╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝
-			</p>
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝   ╚═╝</p>
 			<p>
 				When building Ernest we were asked who gets to decide if you should be happy? What if someone else's version of happy doesn't match yours? What if bad actors train the machine's model to think disturbing content is happy?
 				<br /><br />
@@ -200,7 +197,28 @@
 		</div>
 	</div><!-- /.pvm-container -->
 
-
+	<!-- TOUCH KEYS (visible on touch devices only, fixed to bottom of viewport) -->
+	<div id="touch-keys">
+		<div class="touch-group" id="touch-group-nav">
+			<div class="touch-row">
+				<div class="keycap keycap-wide" id="key-esc">ESC</div>
+			</div>
+			<div class="touch-row">
+				<div class="keycap" id="key-left">&#8678;</div>
+				<div class="keycap" id="key-right">&#8680;</div>
+			</div>
+		</div>
+		<div class="touch-group" id="touch-group-actions">
+			<div class="touch-row">
+				<div class="keycap" id="key-y">Y</div>
+				<div class="keycap" id="key-n">N</div>
+			</div>
+			<div class="touch-row">
+				<div class="keycap" id="key-d">D</div>
+				<div class="keycap" id="key-help">?</div>
+			</div>
+		</div>
+	</div>
 
 
 
@@ -239,6 +257,7 @@
 	<script src="js/analytics.js"></script>
 	<script src="js/dashboard.js"></script>
 	<script src="js/tv-controls.js"></script>
+	<script src="js/touch-keys.js"></script>
 	<script src="js/composer.js"></script>
 
 	<script src="js/vendors/d3.min.js"></script>

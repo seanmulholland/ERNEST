@@ -14,6 +14,15 @@ body {
 	height: 100vh;
 }
 
+/* On touch devices, push TV toward top */
+.touch-device {
+	align-items: flex-start;
+}
+
+.touch-device .pvm-container {
+	margin-top: 15vh;
+}
+
 canvas {
 	position: absolute;
 	top: 0;
@@ -34,14 +43,14 @@ canvas {
 
 .terminal-text {
 	color: #33ff33;
-	font-size: 40px;
+	font-size: var(--tv-text-lg);
 	width: 90%;
 	margin: 0 5%;
 	position: relative;
 }
 
 .block {
-	font-size: 30px;
+	font-size: var(--tv-text-base);
 }
 
 /*** Mirror video ***/
@@ -79,8 +88,8 @@ canvas {
 	top: 0; left: 0; bottom: 0; right: 0;
 	height: 75%;
 	width: 75%;
-	border: 3px ridge;
-    font-size: 29px;
+	border: var(--tv-border) ridge;
+    font-size: var(--tv-text-base);
     text-align: center;
 	z-index: 15;
 }
@@ -104,30 +113,31 @@ canvas {
 }
 
 .windowbar {
-	border-bottom: 3px solid;
-	height: 35px;
-    padding-top: 5px;
-	padding-left: 20px;
+	border-bottom: var(--tv-border) solid;
+	height: 5cqh;
+    padding-top: 0.7cqh;
+	padding-left: 2.8cqw;
 	text-align: left;
 	text-transform: uppercase;
 }
 
 .windowbar div {
     float: right;
-    padding-top: 7px;
-    border-left: 3px solid;
+    padding-top: 1cqh;
+    border-left: var(--tv-border) solid;
     text-align: center;
-    width: 40px;
-    height: 35px;
+    width: 5.6cqw;
+    height: 5cqh;
     position: relative;
-    top: -7px;
+    top: -1cqh;
 }
 
 .infoBox {
-	margin: 20px 0;
+	margin: 2.8cqh 0;
 	padding: 0 3%;
 	height: 85%;
 	position: relative;
+	overflow-y: auto;
 }
 
 #gif img, #analytics img {
@@ -181,7 +191,7 @@ canvas {
     right: 0;
     bottom: -19px;
     margin: auto;
-    font-size: 17px;
+    font-size: var(--tv-text-xs);
     line-height: 1.25em;
     background-color: #5daf2a;
 }
@@ -199,7 +209,7 @@ canvas {
 	position: absolute;
 	right: 7%;
 	bottom: 5%;
-	font-size: 40px;
+	font-size: var(--tv-text-lg);
 	color: #33ff33;
 	z-index: 5;
 }
@@ -208,21 +218,23 @@ canvas {
 	position: absolute;
 	height: 67%;
 	width: 67%;
-	border: 5px solid rgb(51,255,51,0.75);
+	border: var(--tv-border) solid rgb(51,255,51,0.75);
 	margin: auto;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	text-align: center;
-	font-size: 57px;
+	font-size: var(--tv-text-xl);
 	color: #33ff33;
 	z-index: 10;
 }
 
 .pre {
+	display: inline-block;
 	white-space: pre;
-	font-size: 17px;
+	text-align: left;
+	font-size: var(--tv-text-xs);
 	font-family: Courier, monospace;
 	line-height: 1.19;
 }
@@ -248,7 +260,7 @@ canvas {
 
 #dashboardFilters {
 	padding: 10px 0;
-	font-size: 29px;
+	font-size: var(--tv-text-base);
 }
 
 .dashboard-mode {
@@ -317,7 +329,7 @@ canvas {
 	left: 4px;
 	background: rgba(53, 117, 66, 0.85);
 	padding: 2px 6px;
-	font-size: 18px;
+	font-size: var(--tv-text-sm);
 }
 
 .dashboard-card-info {
@@ -326,7 +338,7 @@ canvas {
 }
 
 .dashboard-card-name {
-	font-size: 29px;
+	font-size: var(--tv-text-base);
 	margin-bottom: 4px;
 	text-transform: uppercase;
 	white-space: nowrap;
@@ -338,7 +350,7 @@ canvas {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	font-size: 29px;
+	font-size: var(--tv-text-base);
 	margin: 2px 0;
 }
 
@@ -365,12 +377,12 @@ canvas {
 }
 
 .emotion-bar-value {
-	font-size: 29px;
+	font-size: var(--tv-text-base);
 	width: 55px;
 }
 
 .dashboard-card-count {
-	font-size: 29px;
+	font-size: var(--tv-text-base);
 	margin-top: 4px;
 	opacity: 0.7;
 }
@@ -428,6 +440,15 @@ canvas {
 	height: 100%;
 	overflow: hidden;
 	background: #000;
+	container-type: size;
+
+	/* ---- TV text scale (tweak these to resize all screen content) ---- */
+	--tv-text-xs: 1.7cqw;   /* pre/ASCII art, graph labels          */
+	--tv-text-sm: 1.8cqw;   /* card rank badges                      */
+	--tv-text-base: 2.5cqw; /* popup body, dashboard, windowbar      */
+	--tv-text-lg: 2.9cqw;   /* terminal text, bug overlay             */
+	--tv-text-xl: 4.6cqw;   /* facebox "PLEASE COME CLOSER" prompt   */
+	--tv-border: 0.4cqw;    /* popup & windowbar border width         */
 }
 
 .crt-overlay {
@@ -581,4 +602,168 @@ canvas {
 .power-on .power-led {
 	background: #ff0000;
 	box-shadow: 0 0 6px #f00;
+}
+
+
+/* ===== TOUCH KEYBOARD KEYS ===== */
+
+#touch-keys {
+	display: none;
+	position: fixed;
+	bottom: 15vh;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 30px;
+}
+
+/* Show on touch devices */
+.touch-device #touch-keys {
+	display: flex;
+}
+
+/* Each group is a vertical stack of rows */
+.touch-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+}
+
+/* Each row is a horizontal flex container */
+.touch-row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 18px;
+}
+
+/* Mechanical keycap — matches previous checkpoint sizing */
+.keycap {
+	pointer-events: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 78px;
+	min-height: 78px;
+	width: clamp(72px, 15vw, 96px);
+	height: clamp(72px, 15vw, 96px);
+	background:
+		linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 40%, #2e2e2e 100%);
+	border-radius: 10px;
+	border: 1px solid #222;
+	box-shadow:
+		0 1px 0 1px #1a1a1a,
+		0 3px 0 1px #151515,
+		0 5px 0 1px #111,
+		0 7px 0 1px #0a0a0a,
+		0 9px 12px rgba(0, 0, 0, 0.6),
+		inset 0 1px 1px rgba(255, 255, 255, 0.15);
+	color: #e8e8e8;
+	font-family: 'VT323', 'Courier New', monospace;
+	font-size: clamp(33px, 7.5vw, 45px);
+	font-weight: bold;
+	letter-spacing: 1px;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	transition: transform 0.08s ease, box-shadow 0.08s ease;
+	text-shadow: 0 0 4px rgba(51, 255, 51, 0.4);
+}
+
+/* Wide variant for ESC key spanning two-key width */
+.keycap-wide {
+	min-width: 174px;
+	width: clamp(162px, 31vw, 210px);
+}
+
+/* Pressed state */
+.keycap:active {
+	transform: translateY(4px);
+	background:
+		linear-gradient(180deg, #3a3a3a 0%, #333 40%, #2a2a2a 100%);
+	box-shadow:
+		0 1px 0 0px #1a1a1a,
+		0 1px 0 0px #151515,
+		0 2px 6px rgba(0, 0, 0, 0.5),
+		inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Glow on Y/N keys when listening for answer */
+#touch-keys.yn-active #key-y,
+#touch-keys.yn-active #key-n {
+	color: #33ff33;
+	text-shadow: 0 0 8px rgba(51, 255, 51, 0.7);
+	border-color: rgba(51, 255, 51, 0.3);
+}
+
+/* Hide touch keys on desktop (mouse + fine pointer) */
+@media (hover: hover) and (pointer: fine) {
+	#touch-keys {
+		display: none !important;
+	}
+}
+
+/* ===== TOUCH-DEVICE TV CONTROLS — 87.5% larger (prev 50% + 25%) ===== */
+
+.touch-device .controls {
+	height: clamp(75px, 19vh, 150px);
+	font-size: clamp(0.75rem, 1.9vw, 1.3rem);
+}
+
+.touch-device .branding span {
+	font-size: clamp(1.125rem, 2.8vw, 2rem);
+}
+
+.touch-device .model-num {
+	font-size: 1.03rem;
+}
+
+.touch-device .round-btn {
+	width: clamp(22px, 4.7vw, 38px);
+	height: clamp(22px, 4.7vw, 38px);
+}
+
+.touch-device .power-btn {
+	width: clamp(34px, 6.6vw, 52px);
+	height: clamp(34px, 6.6vw, 52px);
+}
+
+/* ===== TOUCH-DEVICE DASHBOARD — single column, touch-scrollable ===== */
+
+.touch-device .dashboard-grid {
+	grid-template-columns: 1fr;
+}
+
+.touch-device #dashboardList {
+	-webkit-overflow-scrolling: touch;
+	overflow-y: auto;
+}
+
+/* ===== TOUCH-DEVICE — override TV text scale + popup layout ===== */
+
+.touch-device .screen-content {
+	--tv-text-xs: 1.1cqw;
+	--tv-text-sm: 1.1cqw;
+	--tv-text-base: 2.8cqw;
+	--tv-text-lg: 3.5cqw;
+	--tv-text-xl: 3.5cqw;
+	--tv-border: 0.25cqw;
+}
+
+.touch-device .hoverWindow {
+	width: 85%;
+	height: 85%;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.touch-device .infoBox {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
