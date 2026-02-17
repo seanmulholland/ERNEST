@@ -9,6 +9,10 @@ var dashboardState = {
 
 var DASHBOARD_PAGE_SIZE = 6;
 var EMOTION_FILTERS = ['happy', 'sad', 'angry', 'disgust', 'fear', 'surprise'];
+var EMOTION_DB_KEYS = {
+  'happy': 'happy', 'sad': 'sad', 'angry': 'angry',
+  'disgust': 'disgusted', 'fear': 'fearful', 'surprise': 'surprised'
+};
 var DATA_MODES = ['weighted', 'confirmed'];
 
 function toggleDashboard() {
@@ -94,7 +98,7 @@ function fetchRankingsForMode() {
 function sortAndRenderDashboard() {
   var rankings = dashboardState.rankings.slice();
 
-  var key = 'avg_' + dashboardState.filter;
+  var key = 'avg_' + (EMOTION_DB_KEYS[dashboardState.filter] || dashboardState.filter);
   rankings.sort(function(a, b) {
     return (b[key] || 0) - (a[key] || 0);
   });
@@ -140,7 +144,7 @@ function renderDashboardList() {
     emotions.forEach(function(emo) {
       var val = item['avg_' + emo] || 0;
       var pct = Math.round(val * 100);
-      var highlight = (dashboardState.filter === emo) ? ' highlighted' : '';
+      var highlight = ((EMOTION_DB_KEYS[dashboardState.filter] || dashboardState.filter) === emo) ? ' highlighted' : '';
       html += '<div class="emotion-bar-container">';
       html += '<span class="emotion-bar-label">' + emo.substring(0, 3).toUpperCase() + '</span>';
       html += '<div class="emotion-bar-track"><div class="emotion-bar' + highlight + '" style="width:' + pct + '%"></div></div>';
