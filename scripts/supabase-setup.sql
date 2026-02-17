@@ -14,6 +14,7 @@ CREATE TABLE reactions (
   surprised real NOT NULL DEFAULT 0,
   dominant_emotion text NOT NULL,
   user_confirmed boolean DEFAULT NULL,
+  is_synthetic boolean DEFAULT false,
   created_at timestamptz DEFAULT now()
 );
 
