@@ -291,7 +291,7 @@ canvas {
 
 .dashboard-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	gap: 15px;
 	text-align: left;
 }
@@ -735,10 +735,6 @@ canvas {
 }
 
 /* ===== TOUCH-DEVICE DASHBOARD — single column, touch-scrollable ===== */
-
-.touch-device .dashboard-grid {
-	grid-template-columns: 1fr;
-}
 
 .touch-device #dashboardList {
 	-webkit-overflow-scrolling: touch;

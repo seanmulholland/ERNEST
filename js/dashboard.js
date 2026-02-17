@@ -118,6 +118,18 @@ function renderDashboardList() {
 
   var start = 0;
   var end = Math.min(rankings.length, 6);
+
+  // Find max emotion value across visible cards for normalized bar widths
+  var emotions = ['happy', 'sad', 'angry', 'disgusted', 'fearful', 'surprised'];
+  var maxVal = 0;
+  for (var m = start; m < end; m++) {
+    emotions.forEach(function(emo) {
+      var v = rankings[m]['avg_' + emo] || 0;
+      if (v > maxVal) maxVal = v;
+    });
+  }
+  if (maxVal === 0) maxVal = 1;
+
   var html = '<div class="dashboard-grid">';
 
   for (var i = start; i < end; i++) {
@@ -140,10 +152,9 @@ function renderDashboardList() {
     html += '<div class="dashboard-card-info">';
     html += '<div class="dashboard-card-name">' + item.content_id + '</div>';
 
-    var emotions = ['happy', 'sad', 'angry', 'disgusted', 'fearful', 'surprised'];
     emotions.forEach(function(emo) {
       var val = item['avg_' + emo] || 0;
-      var pct = Math.round(val * 100);
+      var pct = Math.round((val / maxVal) * 100);
       var highlight = ((EMOTION_DB_KEYS[dashboardState.filter] || dashboardState.filter) === emo) ? ' highlighted' : '';
       html += '<div class="emotion-bar-container">';
       html += '<span class="emotion-bar-label">' + emo.substring(0, 3).toUpperCase() + '</span>';
