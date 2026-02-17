@@ -752,6 +752,60 @@ canvas {
 	--tv-border: 0.25cqw;
 }
 
+/* ===== WINDOW CONTROLS (maximize / minimize / close) ===== */
+
+.windowbar .x,
+.windowbar .max,
+.windowbar .underscore {
+	cursor: pointer;
+}
+
+.hoverWindow.maximized {
+	width: 100% !important;
+	height: 100% !important;
+	top: 0; left: 0; bottom: 0; right: 0;
+	border-radius: 0;
+}
+
+.hoverWindow.minimized {
+	display: none !important;
+}
+
+#taskbar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 16;
+	display: flex;
+	gap: 2px;
+	padding: 0 2px;
+}
+
+#taskbar:empty {
+	display: none;
+}
+
+.taskbar-tab {
+	background: #357542;
+	color: #fbe293;
+	border: var(--tv-border) solid #fbe293;
+	border-bottom: none;
+	padding: 0.3cqh 1.5cqw;
+	font-size: var(--tv-text-base);
+	font-family: 'VT323', monospace;
+	cursor: pointer;
+	text-transform: uppercase;
+	white-space: nowrap;
+	max-width: 25cqw;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.taskbar-tab:hover {
+	background: #4a9958;
+}
+
 .touch-device .hoverWindow {
 	width: 85%;
 	height: 85%;

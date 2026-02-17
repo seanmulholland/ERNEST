@@ -131,6 +131,8 @@ function resetAlize() {
 	if (typeof dashboardState !== 'undefined') dashboardState.visible = false;
 	// $( '#about' ).hide();
 	$( '#facebox' ).show();
+	$('.hoverWindow').removeClass('maximized minimized');
+	$('#taskbar').empty();
 	$('#touch-keys').removeClass('yn-active');
 	selectContent();
 	activateStaticCanvas();
@@ -479,3 +481,62 @@ function map_range(value, low1, high1, low2, high2) {
 	value = Math.max(low1, Math.min(high1,value));
     return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
+
+// ===== Window Controls (Close / Maximize / Minimize) =====
+
+$(document).on('click', '.windowbar .x', function() {
+	var win = $(this).closest('.hoverWindow');
+	var winId = win.attr('id');
+
+	// Special-case dashboard to keep state in sync
+	if (winId === 'dashboard' && typeof dashboardState !== 'undefined' && dashboardState.visible) {
+		toggleDashboard();
+	} else {
+		win.hide();
+	}
+
+	// Clear analytics auto-hide timer
+	if (winId === 'analytics') {
+		clearTimeout(smileTimeout);
+	}
+
+	// Clean up maximized/minimized state
+	win.removeClass('maximized minimized');
+
+	// Remove any taskbar tab for this window
+	$('#taskbar').find('[data-window="' + winId + '"]').remove();
+});
+
+$(document).on('click', '.windowbar .max', function() {
+	var win = $(this).closest('.hoverWindow');
+	win.toggleClass('maximized');
+});
+
+$(document).on('click', '.windowbar .underscore', function() {
+	var win = $(this).closest('.hoverWindow');
+	var winId = win.attr('id');
+
+	// Get window title from the windowbar text
+	var title = win.find('.windowbar').contents().filter(function() {
+		return this.nodeType === 3; // text nodes only
+	}).text().trim();
+
+	win.addClass('minimized');
+
+	// Create taskbar tab
+	var tab = $('<div class="taskbar-tab"></div>')
+		.attr('data-window', winId)
+		.text(title);
+	$('#taskbar').append(tab);
+});
+
+$(document).on('click', '.taskbar-tab', function() {
+	var winId = $(this).attr('data-window');
+	var win = $('#' + winId);
+
+	win.removeClass('minimized');
+	win.show();
+
+	// Remove the tab
+	$(this).remove();
+});
