@@ -36,7 +36,9 @@ CREATE POLICY "Allow anonymous reads"
 -- All writes go through the submit-reaction Edge Function (server-side, service role).
 
 -- Aggregate view: pre-computed per-content rankings
-CREATE VIEW content_rankings AS
+-- security_invoker = true ensures the view respects the querying user's RLS policies
+CREATE VIEW content_rankings
+WITH (security_invoker = true) AS
 SELECT
   content_id,
   COUNT(*) as total_reactions,
@@ -52,7 +54,8 @@ FROM reactions
 GROUP BY content_id;
 
 -- Weighted content rankings: confirmed reactions weighted 1.0, rejected/legacy weighted 0.25
-CREATE VIEW weighted_content_rankings AS
+CREATE VIEW weighted_content_rankings
+WITH (security_invoker = true) AS
 SELECT
   content_id,
   COUNT(*) as total_reactions,
@@ -75,7 +78,8 @@ FROM reactions
 GROUP BY content_id;
 
 -- Confirmed-only content rankings: simple AVG over confirmed rows only
-CREATE VIEW confirmed_content_rankings AS
+CREATE VIEW confirmed_content_rankings
+WITH (security_invoker = true) AS
 SELECT
   content_id,
   COUNT(*) as total_reactions,
